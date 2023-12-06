@@ -12,15 +12,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
- 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
- 
+
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
- 
+ @Getter
+ @Setter
 @Entity
 @Table(name="Applyjob")
 public class ApplyJob {
@@ -44,6 +49,16 @@ public class ApplyJob {
     @OneToMany(mappedBy = "applyJob", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ScheduleInterview> scheduleInterviews;
+    
+    @OneToMany(mappedBy = "applyJob", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@JsonIgnore
+	private List<ApplicantStatusHistory> statusHistory;
+	
+	@OneToMany(mappedBy = "applyJob",cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@JsonIgnore
+	private List<Alerts> alerts;
 
 
 	public List<ScheduleInterview> getScheduleInterviews() {

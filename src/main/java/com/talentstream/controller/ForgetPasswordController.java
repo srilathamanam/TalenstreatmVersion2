@@ -90,9 +90,7 @@ public class ForgetPasswordController {
                  throw new CustomException("User not found.", HttpStatus.BAD_REQUEST);
              }
 
-             if (!newPassword.equals(confirmedPassword)) {
-                 throw new CustomException("Passwords do not match.", HttpStatus.BAD_REQUEST);
-             }
+             
 
              jobRecruiter.setPassword(passwordEncoder.encode(newPassword));
              jobRecruiterService.addRecruiter(jobRecruiter);
