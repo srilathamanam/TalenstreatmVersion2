@@ -15,14 +15,14 @@ public class ViewJobService {
 	@Autowired
     private JobRepository jobRepository;
   
-public ResponseEntity<?> getJobDetailsForApplicant(Long jobId) {
+public JobDTO getJobDetailsForApplicant(Long jobId) {
 	
     final ModelMapper modelMapper = new ModelMapper();
 	Job job = jobRepository.findById(jobId).orElse(null);
 
 	if (job != null) {
         JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
-        return ResponseEntity.ok(jobDTO);
+        return jobDTO;
     } else {
         throw new CustomException("Job with ID " + jobId + " not found.", HttpStatus.INTERNAL_SERVER_ERROR);
     }

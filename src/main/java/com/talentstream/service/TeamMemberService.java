@@ -1,6 +1,7 @@
 package com.talentstream.service;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -24,22 +25,51 @@ public class TeamMemberService {
     @Autowired
     private JobRecruiterRepository recruiterRepository; 
     public TeamMemberDTO addTeamMemberToRecruiter(Long recruiterId, TeamMemberDTO teamMemberDTO) {
-    	 JobRecruiter recruiter = recruiterRepository.findById(recruiterId)
-                 .orElseThrow(() -> new CustomException("Recruiter with ID " + recruiterId + " not found.", HttpStatus.INTERNAL_SERVER_ERROR));
+        System.out.println(teamMemberDTO.getName());
 
-         TeamMember teamMember1 = modelMapper.map(teamMemberDTO, TeamMember.class);
-         teamMember1.setRecruiter(recruiter);
+        JobRecruiter recruiter = recruiterRepository.findById(recruiterId)
+                .orElseThrow(() -> new CustomException("Recruiter with ID " + recruiterId + " not found.", HttpStatus.INTERNAL_SERVER_ERROR));
 
-         TeamMember savedTeamMember = teamMemberRepository.save(teamMember1);
+        TeamMember teamMember = new TeamMember();
+        teamMember.setName(teamMemberDTO.getName());
+        teamMember.setRole(teamMemberDTO.getRole());
+        teamMember.setEmail(teamMemberDTO.getEmail());
+       
+        // Map other fields as needed
 
-         return modelMapper.map(savedTeamMember, TeamMemberDTO.class);
+        teamMember.setRecruiter(recruiter);
+
+        TeamMember savedTeamMember = teamMemberRepository.save(teamMember);
+
+        TeamMemberDTO savedTeamMemberDTO = new TeamMemberDTO();
+        savedTeamMemberDTO.setId(savedTeamMember.getId());
+        savedTeamMemberDTO.setName(savedTeamMember.getName());
+        savedTeamMemberDTO.setRole(savedTeamMember.getRole());
+        savedTeamMemberDTO.setEmail(savedTeamMember.getEmail());
+        
+        // Map other fields as needed
+
+        return savedTeamMemberDTO;
     }
     
     public List<TeamMemberDTO> getTeammembersByRecruiter(long recruiterId) {
     	  List<TeamMember> teamMembers = teamMemberRepository.findByJobRecruiterId(recruiterId);
-          return teamMembers.stream()
-                  .map(teamMember -> modelMapper.map(teamMember, TeamMemberDTO.class))
-                  .collect(Collectors.toList());
+          
+    	  List<TeamMemberDTO> al = new ArrayList<>();
+    	  for(TeamMember obj: teamMembers) {
+    		  
+    	  TeamMemberDTO teamMemberDTO = new TeamMemberDTO();
+          teamMemberDTO.setId(obj.getId());
+          teamMemberDTO.setName(obj.getName());
+          teamMemberDTO.setRole(obj.getRole());
+          teamMemberDTO.setEmail(obj.getEmail());
+          
+          al.add(teamMemberDTO);
+          
+          
+    	  }
+    	  
+    	  return al;
     }
     
     public void deleteTeamMemberById(Long teamMemberId) {

@@ -7,6 +7,8 @@ import com.talentstream.entity.CompanyProfile;
 import com.talentstream.entity.JobRecruiter;
 import com.talentstream.repository.CompanyProfileRepository;
 import com.talentstream.repository.JobRecruiterRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,13 +24,25 @@ public class CompanyProfileService {
         this.companyProfileRepository = companyProfileRepository;
     }
 
-    public CompanyProfile saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
+    public String saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
     	   	 JobRecruiter jobRecruiter = jobRecruiterRepository.findByRecruiterId( jobRecruiterId);
+    	  	List<CompanyProfile> companyProfiles=companyProfileRepository.findByJobRecruiter(jobRecruiter);
+    	   	
+    	   	
+    	   	
     	   	 if (jobRecruiter != null) {
     	            // Convert DTO to Entity before saving
+    	   	
     	            CompanyProfile companyProfile = convertDTOToEntity(companyProfileDTO);
     	            companyProfile.setJobRecruiter(jobRecruiter);
-    	            return companyProfileRepository.save(companyProfile);
+    	            
+    	            if(companyProfiles == null) {
+    	            	return "Profile saved successfully";
+    	            }else {
+    	            	return "CompanyProfile was already updated.";
+    	            }
+    	            
+    	            
     	        } else {
     	            throw new Exception("JobRecruiter with ID " + jobRecruiterId + " not found.");
     	        }

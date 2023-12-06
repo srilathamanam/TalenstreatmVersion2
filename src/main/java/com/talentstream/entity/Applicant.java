@@ -46,6 +46,8 @@ public class Applicant {
     private Set<SavedJob> savedJobs = new HashSet<>();
     @Column(nullable = false)
     private String roles="ROLE_JOBAPPLICANT"; 
+    
+    private int alertCount;
 	public long getId() {
 		return id;
  

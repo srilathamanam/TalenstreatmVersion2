@@ -35,10 +35,11 @@ public class ApplicantProfileService {
  	        if (existingProfile == null) {
  	        	ApplicantProfile applicantProfile = convertDTOToEntity(applicantProfileDTO);
 	        	applicantProfile.setApplicant(applicant);
-	             applicantProfileRepository.save(applicantProfile);
-	              return "profile saved sucessfully";
+	        	ApplicantProfile applicantProfile1=applicantProfileRepository.save(applicantProfile);
+	              
+	        	return "profile saved sucessfully";
 	        } else {
-	        	throw new CustomException("Profile for this applicant already exists", HttpStatus.BAD_REQUEST);
+	        	return "Profile for this applicant already exists";
 	        }
 	    	}
 	    }

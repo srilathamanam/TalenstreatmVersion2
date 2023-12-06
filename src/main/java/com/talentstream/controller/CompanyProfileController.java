@@ -29,9 +29,11 @@ public class CompanyProfileController {
     
     @PostMapping("/recruiters/company-profiles/{jobRecruiterId}")
     public ResponseEntity<String> createCompanyProfile(@RequestBody CompanyProfileDTO companyProfileDTO, @PathVariable Long jobRecruiterId) {
+    	
+    	
     	try {
-            companyProfileService.saveCompanyProfile(companyProfileDTO, jobRecruiterId);
-            return ResponseEntity.status(HttpStatus.OK).body("{\"message\": \"CompanyProfile saved successfully.\"}");
+            String result= companyProfileService.saveCompanyProfile(companyProfileDTO, jobRecruiterId);
+           return ResponseEntity.ok(result);
         } catch (CustomException ce) {
             return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
         } catch (Exception e) {

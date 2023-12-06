@@ -33,7 +33,7 @@ public class ApplicantProfileController {
     public ResponseEntity<String> createOrUpdateApplicantProfile(@PathVariable long applicantid, @RequestBody ApplicantProfileDTO applicantProfileDTO) {
         try {
             String result = applicantProfileService.createOrUpdateApplicantProfile(applicantid, applicantProfileDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            return ResponseEntity.ok(result);
         } catch (CustomException e) {
         	logger.error("INTERNAL_SERVER_ERROR");
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
