@@ -218,4 +218,9 @@ public class RegisterController {
 		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		        }
 		    }
+		
+		public void setOtpService(OtpService otpService2) {
+			otpService=otpService2;
+			
+		}
 }
