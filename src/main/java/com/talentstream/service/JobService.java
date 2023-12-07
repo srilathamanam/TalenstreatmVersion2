@@ -62,7 +62,6 @@ public class JobService {
     public ResponseEntity<String> saveJob(JobDTO jobDTO, Long jobRecruiterId) {
     	 try {
              JobRecruiter jobRecruiter = jobRecruiterRepository.findByRecruiterId(jobRecruiterId);
-             jobDTO.setCompanyname(jobRecruiter.getCompanyname());
              if (jobRecruiter != null) {
                  Job job = convertDTOToEntity(jobDTO);
                  job.setJobRecruiter(jobRecruiter);
@@ -112,7 +111,6 @@ public class JobService {
 	private Job convertDTOToEntity(JobDTO jobDTO) {
         Job job = new Job();       
         job.setJobTitle(jobDTO.getJobTitle());
-        job.setCompanyname(jobDTO.getCompanyname());
         job.setMinimumExperience(jobDTO.getMinimumExperience());
         job.setMaximumExperience(jobDTO.getMaximumExperience());
         job.setMinSalary(jobDTO.getMinSalary());

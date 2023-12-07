@@ -7,11 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.talentstream.entity.ApplicantProfile;
 import com.talentstream.entity.AppliedApplicantInfo;
 import com.talentstream.entity.ApplyJob;
 import com.talentstream.entity.Job;
-import com.talentstream.entity.SavedJob;
 import com.talentstream.entity.Applicant;
 @Repository
 public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {

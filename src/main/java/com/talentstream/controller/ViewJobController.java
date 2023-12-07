@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.talentstream.service.ViewJobService;
-import com.talentstream.dto.JobDTO;
 import com.talentstream.exception.CustomException;
 
 @RestController
@@ -21,16 +20,16 @@ public class ViewJobController {
 	private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
     //@GetMapping("/applicant/viewjob/{jobId}/{applicantId}")
 	   @GetMapping("/applicant/viewjob/{jobId}")
-	    public ResponseEntity<JobDTO> getJobDetailsForApplicant(
+	    public ResponseEntity<?> getJobDetailsForApplicant(
 	                      @PathVariable Long jobId) {
 	    	
 		   try {
-			   JobDTO jobDetails = viewJobService.getJobDetailsForApplicant(jobId);
+			   ResponseEntity<?> jobDetails = viewJobService.getJobDetailsForApplicant(jobId);
 		        return ResponseEntity.ok(jobDetails);
 		    } catch (CustomException e) {
-		        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		    } catch (Exception e) {
-		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving job details");
 		    }
 	 
 		   }  

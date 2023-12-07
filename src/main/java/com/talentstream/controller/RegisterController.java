@@ -65,7 +65,7 @@ public class RegisterController {
 	    @Autowired
 	    public RegisterController(RegisterService regsiterService)
 	    {
-	        this.regsiterService = regsiterService;
+	        this.regsiterService = regsiterService;	     
 
 	    }
 
@@ -177,7 +177,7 @@ public class RegisterController {
 	            String confirmedPassword = request.getConfirmedPassword();
 	            	
 	            if (email == null) {
-	                          throw new CustomException("Email not found.", HttpStatus.BAD_REQUEST);
+	                  throw new CustomException("Email not found.", HttpStatus.BAD_REQUEST);
 	            }
 	           
 	            Applicant applicant = regsiterService.findByEmail(email);
@@ -218,7 +218,7 @@ public class RegisterController {
 		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		        }
 		    }
-		
+
 		public void setOtpService(OtpService otpService2) {
 			otpService=otpService2;
 			

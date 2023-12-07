@@ -1,6 +1,7 @@
 package com.talentstream.entity;
 
  
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set; 
@@ -15,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
@@ -27,14 +29,10 @@ public class ApplicantProfile {
  
      @Embedded
     private BasicDetails basicDetails;
- 
+     @Embedded
+    private XClassDetails xClassDetails; 
     @Embedded
-    private XClassDetails xClassDetails;
- 
-    @Embedded
-    private IntermediateDetails intermediateDetails;
- 
- 
+    private IntermediateDetails intermediateDetails;  
     @Embedded
     private GraduationDetails graduationDetails;
  
@@ -43,31 +41,21 @@ public class ApplicantProfile {
             CascadeType.PERSIST,
             CascadeType.MERGE
  
-        })
- 
+        }) 
     @JoinTable(
             name = "applicant_profile_skills_required",
             joinColumns = @JoinColumn(name = "profileid"),
-            inverseJoinColumns = @JoinColumn(name = "applicantskill_id") // This is the column in the other table
+            inverseJoinColumns = @JoinColumn(name = "applicantskill_id") 
         )
     private Set<ApplicantSkills> skillsRequired=new HashSet<>();
- 
-    
-    @ElementCollection
-    private List<ExperienceDetails> experienceDetails;
-    
- 
-    @OneToOne(cascade = CascadeType.ALL)
+     @ElementCollection
+    private List<ExperienceDetails> experienceDetails;       
+         @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="applicantid", referencedColumnName = "id")
     private Applicant applicant;
- 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "documents_id", referencedColumnName = "id")
-//    private ApplicantDocuments documents;
-//    
-    @Column(nullable = false)
+         
+     @Column(nullable = false)
     private String roles="ROLE_JOBAPPLICANT";
- 
  
 public int getProfileid() {
 	return profileid;
@@ -136,11 +124,10 @@ public void setApplicant(Applicant applicant) {
 public String getRoles() {
 	return roles;
 }
- 
+
 public void setRoles(String roles) {
 	this.roles = roles;
 }
  
- 
- 
+
 }

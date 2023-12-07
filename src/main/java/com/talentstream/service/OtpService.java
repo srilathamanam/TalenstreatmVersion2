@@ -7,11 +7,8 @@ import java.util.Map;
 
 @Service
 public class OtpService {
-
-    private static final long OTP_VALID_DURATION_MS = 120 * 1000; // 120 seconds
-
+    private static final long OTP_VALID_DURATION_MS = 120 * 1000; 
     private Map<String, OtpData> otpMap = new HashMap<>();
-
     public String generateOtp(String userEmail) {
         String otp = generateRandomOtp();
         otpMap.put(userEmail, new OtpData(otp));

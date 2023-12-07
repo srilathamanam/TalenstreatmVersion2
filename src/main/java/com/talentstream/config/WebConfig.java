@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 public class WebConfig {
 
     private static final Long MAX_AGE = 3600L;

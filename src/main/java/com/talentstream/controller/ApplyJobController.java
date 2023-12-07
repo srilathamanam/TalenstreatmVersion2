@@ -17,21 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.talentstream.dto.JobDTO;
 import com.talentstream.dto.ScheduleInterviewDTO;
-import com.talentstream.entity.Alerts;
-import com.talentstream.entity.Applicant;
 import com.talentstream.entity.ApplicantJobInterviewDTO;
-import com.talentstream.entity.ApplicantStatusHistory;
 import com.talentstream.entity.AppliedApplicantInfoDTO;
 import com.talentstream.entity.ApplyJob;
 import com.talentstream.entity.Job;
 import com.talentstream.entity.ScheduleInterview;
 import com.talentstream.service.ApplyJobService;
 import com.talentstream.service.ScheduleInterviewService;
-
-import jakarta.persistence.EntityNotFoundException;
-
 import com.talentstream.exception.CustomException;
-import com.talentstream.repository.RegisterRepository;
 @RestController       
 @RequestMapping("/applyjob")
 public class ApplyJobController {
@@ -39,8 +32,6 @@ public class ApplyJobController {
 	  final ModelMapper modelMapper = new ModelMapper();
 	 @Autowired
 	    private ApplyJobService applyJobService;
-	 @Autowired
-	 	private RegisterRepository applicantRepository;
 	 @Autowired
 	    private ScheduleInterviewService scheduleInterviewService;
 	 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
@@ -228,53 +219,6 @@ public class ApplyJobController {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
        }
    }
-   
-   @GetMapping("/recruiters/applyjob-status-history/{applyJobId}")
-	public ResponseEntity<List<ApplicantStatusHistory>> getApplicantStatusHistory(@PathVariable long applyJobId){
-		try {
-			List<ApplicantStatusHistory> statusHistory=applyJobService.getApplicantStatusHistory(applyJobId);
-			return ResponseEntity.ok(statusHistory);
-		} catch (EntityNotFoundException e) {
-			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		}catch (Exception e) {
-			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-		
-	}
-   
-   @GetMapping("/applicant/job-alerts/{applyJobId}")
-	public ResponseEntity<List<Alerts>> getAlerts(@PathVariable long applyJobId){
-		try {
-			List<Alerts> notifications=applyJobService.getAlerts(applyJobId);
-			// Reset alertCount to zero when fetching alerts
-	        applyJobService.resetAlertCount(applyJobId);
-			return ResponseEntity.ok(notifications);
-		} catch (EntityNotFoundException e) {
-			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		}catch (Exception e) {
-			// TODO: handle exception
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-		
-	}
-   
-   @GetMapping("/applicants/{applicantId}/unread-alert-count")
-	public ResponseEntity<Integer> getUnreadAlertCount(@PathVariable long applicantId) {
-	    try {
-	        Applicant applicant = applicantRepository.findById(applicantId);
-	        if (applicant != null) {
-	            int unreadAlertCount = applicant.getAlertCount();
-	            return ResponseEntity.ok(unreadAlertCount);
-	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-	        }
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	    }
-	}
  }
 
 

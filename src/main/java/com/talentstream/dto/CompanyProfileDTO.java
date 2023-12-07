@@ -9,6 +9,7 @@ public class CompanyProfileDTO {
     private String phoneNumber;
     private String email;
     private String headOffice;
+    private byte[] logo;
     private List<String> socialProfiles;
 	public Long getId() {
 		return id;
@@ -51,6 +52,12 @@ public class CompanyProfileDTO {
 	}
 	public void setSocialProfiles(List<String> socialProfiles) {
 		this.socialProfiles = socialProfiles;
+	}
+	public byte[] getLogo() {
+		return logo;
+	}
+	public void setLogo(byte[] logo) {
+		this.logo = logo;
 	}
   	
     

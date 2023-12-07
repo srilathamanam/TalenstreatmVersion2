@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.talentstream.dto.ApplicantProfileDTO;
 import com.talentstream.exception.CustomException;
 import com.talentstream.service.ApplicantProfileService;
+
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +32,10 @@ public class ApplicantProfileController {
     }
 
     @PostMapping("/createprofile/{applicantid}")
-    public ResponseEntity<String> createOrUpdateApplicantProfile(@PathVariable long applicantid, @RequestBody ApplicantProfileDTO applicantProfileDTO) {
+    public ResponseEntity<String> createOrUpdateApplicantProfile(@PathVariable long applicantid, @RequestBody ApplicantProfileDTO applicantProfileDTO) throws IOException {
         try {
             String result = applicantProfileService.createOrUpdateApplicantProfile(applicantid, applicantProfileDTO);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (CustomException e) {
         	logger.error("INTERNAL_SERVER_ERROR");
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());

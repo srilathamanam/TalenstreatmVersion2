@@ -16,6 +16,4 @@ public interface CompanyProfileRepository extends JpaRepository<CompanyProfile, 
 	
 	List<CompanyProfile> findByJobRecruiter(JobRecruiter jobRecruiter);
 	CompanyProfile save(CompanyProfileDTO companyProfileDTO);
-	
-	
 }

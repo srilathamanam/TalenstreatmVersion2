@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 //@Entity
 
 @Embeddable
-
 public class XClassDetails {
 	  private String xschoolName;
 	    private String xboard;
@@ -54,6 +53,6 @@ public class XClassDetails {
 		public void setxPincode(String xPincode) {
 			this.xPincode = xPincode;
 		}
-	    
+		
 
 }

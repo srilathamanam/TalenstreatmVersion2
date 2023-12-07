@@ -58,7 +58,6 @@ public class FindRecommendedJobController {
     private JobDTO convertEntityToDTO(Job job) {
         JobDTO jobDTO = new JobDTO();
         jobDTO.setId(job.getId());
-        jobDTO.setCompanyname(job.getCompanyname());
         jobDTO.setJobTitle(job.getJobTitle());
         jobDTO.setMinimumExperience(job.getMinimumExperience());
         jobDTO.setMaximumExperience(job.getMaximumExperience());

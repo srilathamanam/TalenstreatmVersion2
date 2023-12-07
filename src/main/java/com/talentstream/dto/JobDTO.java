@@ -16,14 +16,6 @@ public class JobDTO {
 	    private Set<RecuriterSkillsDTO> skillsRequired;
 	    private String jobHighlights;
 	    private String description;
-	    private String Companyname;
-		
-		public String getCompanyname() {
-			return Companyname;
-		}
-		public void setCompanyname(String companyname) {
-			Companyname = companyname;
-		}
 		public Long getId() {
 			return id;
 		}

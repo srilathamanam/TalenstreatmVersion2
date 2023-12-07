@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class RegisterService {
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -60,8 +61,8 @@ public void updatePassword(String userEmail, String newPassword) {
 	try {
         Applicant applicant = applicantRepository.findByEmail(userEmail);
         if (applicant != null) {
-            applicant.setPassword(newPassword);
-            applicantRepository.save(applicant);
+            applicant.setPassword(passwordEncoder.encode(newPassword));
+                       applicantRepository.save(applicant);
         } else {
             throw new EntityNotFoundException("Applicant not found for email: " + userEmail);
         }

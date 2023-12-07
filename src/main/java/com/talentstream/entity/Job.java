@@ -27,19 +27,8 @@ public class Job {
    // @JoinColumn(name = "jobRecruiter_id")
     private JobRecruiter jobRecruiter;
 
-    private String companyname;
     @Column(nullable = false)
     private String jobTitle;
-
-    
-    
-	public String getCompanyname() {
-		return companyname;
-	}
-
-	public void setCompanyname(String companyname) {
-		this.companyname = companyname;
-	}
 
 	public JobRecruiter getJobRecruiter() {
 		return jobRecruiter;

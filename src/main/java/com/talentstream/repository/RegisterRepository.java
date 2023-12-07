@@ -5,10 +5,10 @@ import org.springframework.stereotype.Repository;
 import com.talentstream.entity.Applicant;
 
 @Repository
-public interface RegisterRepository extends JpaRepository<Applicant, Integer> {
+public interface RegisterRepository extends JpaRepository<Applicant,Integer> {
 	Applicant  findByEmail(String email);
-	boolean existsByEmail(String email);
-	Applicant findById(Long id);
+	boolean existsByEmail(String email);	
 	Applicant getApplicantById(long applicantid);
+	Applicant findById(long id);
 
 }
