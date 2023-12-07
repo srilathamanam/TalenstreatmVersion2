@@ -19,12 +19,20 @@ public class Alerts {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@Column(name = "alerts_id")
+	private long alertsId;
+	
 	@ManyToOne
 	@JoinColumn(name = "applyJobId")
 	private ApplyJob applyJob;
+	
 	private String companyName;
 	private String status;
+	
 	@Column(columnDefinition = "DATE")
 	private LocalDate changeDate;
+	
+	@ManyToOne
+	@JoinColumn(name = "applicant_id")
+	private Applicant applicant;
 }

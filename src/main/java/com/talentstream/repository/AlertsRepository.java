@@ -8,5 +8,7 @@ import com.talentstream.entity.Alerts;
 
 public interface AlertsRepository extends JpaRepository<Alerts, Long>{
 
-	List<Alerts> findByApplyJob_ApplyJobIdOrderByChangeDateDesc(long applyJobId);
+	//List<Alerts> findByApplyJob_ApplyJobIdOrderByChangeDateDesc(long applyJobId);
+
+	List<Alerts> findByApplicant_IdOrderByChangeDateDesc(long applicantId);
 }
