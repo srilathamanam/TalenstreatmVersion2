@@ -36,8 +36,7 @@ public class ApplicantImageController {
     public String fileUpload(@PathVariable Long applicantId,@RequestParam("photo")MultipartFile photo) 
     {
     	 try {
-    	        String filename = this.applicantImageService.Uplo
-    	        		adImage(applicantId, photo);
+    	        String filename = this.applicantImageService.UploadImage(applicantId, photo);
     	        return "Image uploaded successfully. Filename: " + filename;
     	    } catch (CustomException ce) {
     	        return ce.getMessage();
