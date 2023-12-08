@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 
 
 @Entity
-@Table(name = "applicant_status_history")
 public class ApplicantStatusHistory {
  
 	@Id
