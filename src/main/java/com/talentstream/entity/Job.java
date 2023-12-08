@@ -29,7 +29,7 @@ public class Job {
 
     @Column(nullable = false)
     private String jobTitle;
-
+  
 	public JobRecruiter getJobRecruiter() {
 		return jobRecruiter;
 	}

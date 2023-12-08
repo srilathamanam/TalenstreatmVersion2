@@ -1,7 +1,6 @@
 package com.talentstream.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,45 +19,41 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import com.talentstream.exception.CustomException;
 import com.talentstream.exception.UnsupportedFileTypeException;
-import com.talentstream.service.ApplicantImageService;
-
+import com.talentstream.service.ApplicantResumeService;
 @RestController
-@RequestMapping("/applicant-image")
-public class ApplicantImageController {
-	
+@RequestMapping("/applicant-pdf")
+public class ApplicantResumeController {
 	@Autowired
-    private ApplicantImageService applicantImageService;
+    private ApplicantResumeService applicantResumeService;
 	
-	@Value("${project.photo-image-folder}")
+	@Value("${project.applicant-pdf-folder}")
 	private String path;
 	
     @PostMapping("/{applicantId}/upload")
-    public String fileUpload(@PathVariable Long applicantId,@RequestParam("photo")MultipartFile photo) 
+    public String fileUpload(@PathVariable Long applicantId,@RequestParam("resume")MultipartFile resume) 
     {
-    	 try {
-    	        String filename = this.applicantImageService.Uplo
-    	        		adImage(applicantId, photo);
-    	        return "Image uploaded successfully. Filename: " + filename;
-    	    } catch (CustomException ce) {
-    	        return ce.getMessage();
-    	    } catch (UnsupportedFileTypeException e) {
-    	        return "Only JPG and PNG file types are allowed.";
-    	    } catch (MaxUploadSizeExceededException e) {
-    	        return "File size should be less than 1MB.";
-    	    } catch (Exception e) {
-    	        e.printStackTrace();
-    	        return "Image not uploaded successfully";
-    	    }
+    	try {
+            String filename = this.applicantResumeService.UploadPdf(applicantId, resume);
+            return "Resume uploaded successfully. Filename: " + filename;
+        } catch (CustomException ce) {
+            return ce.getMessage();
+        } catch (UnsupportedFileTypeException e) {
+            return "Only PDF files are allowed.";
+        } catch (MaxUploadSizeExceededException e) {
+            return "File size should be less than 5MB.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Resume not uploaded successfully";
+        }
     }
     
     @GetMapping("/{applicantId}/download")
-    public ResponseEntity<Resource> downloadImage(@PathVariable Long applicantId) throws IOException {
+    public ResponseEntity<Resource> downloadPDF(@PathVariable Long applicantId) throws IOException {
     	try {
-    	Resource resource = applicantImageService.downloadImage(applicantId);
-    	String contentType = Files.probeContentType(resource.getFile().toPath());
+    	Resource resource = applicantResumeService.downloadPdf(applicantId);
 		return ResponseEntity.ok()
 		        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-		        .contentType(MediaType.parseMediaType(contentType))
+		        .contentType(MediaType.APPLICATION_PDF)
 		        .body(resource);
     } catch (CustomException ce) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

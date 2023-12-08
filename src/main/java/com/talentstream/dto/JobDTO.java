@@ -3,6 +3,29 @@ package com.talentstream.dto;
 import java.util.Set;
 public class JobDTO {
 	 private Long id;
+	   private Long recruiterId;
+	  
+	    public String getCompanyname() {
+		return companyname;
+	}
+	public void setCompanyname(String companyname) {
+		this.companyname = companyname;
+	}
+	public String getMobilenumber() {
+		return mobilenumber;
+	}
+	public void setMobilenumber(String mobilenumber) {
+		this.mobilenumber = mobilenumber;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+		private String companyname;
+	    private String mobilenumber;
+	    private String email;
 	    private String jobTitle;
 	    private int minimumExperience;
 	    private int maximumExperience;
@@ -99,6 +122,12 @@ public class JobDTO {
 		}
 		public void setDescription(String description) {
 			this.description = description;
+		}
+		public Long getRecruiterId() {
+			return recruiterId;
+		}
+		public void setRecruiterId(Long recruiterId) {
+			this.recruiterId = recruiterId;
 		}
 	    
 	    

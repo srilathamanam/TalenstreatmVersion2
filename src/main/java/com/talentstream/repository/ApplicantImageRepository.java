@@ -11,5 +11,7 @@ public interface ApplicantImageRepository extends JpaRepository<ApplicantImage, 
 	ApplicantImage findByApplicantId(long applicantId);
 
 	ApplicantImage findById(Applicant applicant);
+
+	boolean existsByApplicant(Applicant applicant);
 	
 }

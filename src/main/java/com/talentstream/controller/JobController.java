@@ -59,7 +59,15 @@ public class JobController {
             }
 
             List<JobDTO> jobDTOs = jobs.stream()
-                    .map(job -> modelMapper.map(job, JobDTO.class))
+            		.map(job -> {
+                        JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+                       
+                        jobDTO.setRecruiterId(job.getJobRecruiter().getRecruiterId());
+                        jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+                        jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+                        jobDTO.setEmail(job.getJobRecruiter().getEmail());
+                        return jobDTO;
+                    })
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(jobDTOs);
