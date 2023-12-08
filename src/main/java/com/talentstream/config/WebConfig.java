@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.util.Arrays;
 
 @Configuration
-//@EnableWebMvc
+@EnableWebMvc
 public class WebConfig {
 
     private static final Long MAX_AGE = 3600L;
@@ -26,9 +26,10 @@ public class WebConfig {
         config.setAllowCredentials(true);
    //https://talent-tracker-front-k336pfj8a-madar1992.vercel.app
         
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://talent-stream-front-end-version2-26cniod9h-eedekarunakar.vercel.app");
+        // config.addAllowedOrigin("http://localhost:3000");
+        // config.addAllowedOrigin("https://talent-stream-front-end-version2-26cniod9h-eedekarunakar.vercel.app");
         
+            config.addAllowedOrigin("*");
 
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
