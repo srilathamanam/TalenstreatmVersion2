@@ -9,16 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.Getter;
-import lombok.Setter;
 
 
 
-import lombok.Getter;
-import lombok.Setter;
- 
-@Getter
-@Setter
 @Entity
 public class Alerts {
  
@@ -26,9 +19,7 @@ public class Alerts {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "alerts_id")
 	private long alertsId;
-//	@ManyToOne
-//	@JoinColumn(name = "applyJobId")
-//	private ApplyJob applyJob;
+
 	private String companyName;
 	private String status;
 	@Column(columnDefinition = "DATE")
@@ -36,4 +27,36 @@ public class Alerts {
 	@ManyToOne
 	@JoinColumn(name = "applicant_id")
 	private Applicant applicant;
+	public long getAlertsId() {
+		return alertsId;
+	}
+	public void setAlertsId(long alertsId) {
+		this.alertsId = alertsId;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public LocalDate getChangeDate() {
+		return changeDate;
+	}
+	public void setChangeDate(LocalDate changeDate) {
+		this.changeDate = changeDate;
+	}
+	public Applicant getApplicant() {
+		return applicant;
+	}
+	public void setApplicant(Applicant applicant) {
+		this.applicant = applicant;
+	}
+	
+	
 }

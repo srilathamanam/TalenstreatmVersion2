@@ -1,7 +1,6 @@
 package com.talentstream.entity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
 @Embeddable
 public class IntermediateDetails {
 	 private String icollegeName;
