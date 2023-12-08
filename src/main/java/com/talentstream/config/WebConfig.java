@@ -27,7 +27,7 @@ public class WebConfig {
    //https://talent-tracker-front-k336pfj8a-madar1992.vercel.app
         
         config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://talent-stream-version2-ldo1j2kfn-eedekarunakar.vercel.app/");
+        config.addAllowedOrigin("https://talent-stream-version2-divpjyv74-eedekarunakar.vercel.app//");
         
 
         config.setAllowedHeaders(Arrays.asList(
