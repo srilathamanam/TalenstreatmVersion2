@@ -27,7 +27,7 @@ public class WebConfig {
   
         
         config.addAllowedOrigin("http://localhost:3000");
-         config.addAllowedOrigin("https://talent-stream-front-end-version2-9uz3lp51o-eedekarunakar.vercel.app");
+         config.addAllowedOrigin("https://talent-stream-front-end-version2-kwrsb2zt1-eedekarunakar.vercel.app");
         
             // config.addAllowedOrigin("*");
 
