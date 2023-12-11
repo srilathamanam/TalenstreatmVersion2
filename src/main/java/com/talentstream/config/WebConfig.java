@@ -30,7 +30,6 @@ public class WebConfig {
         //  config.addAllowedOrigin("https://talent-stream-front-end-version2-kwrsb2zt1-eedekarunakar.vercel.app");
         
             config.addAllowedOrigin("*");
-config.addAllowedOrigin("https://talent-stream-front-end-version2-eedekarunakar.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
