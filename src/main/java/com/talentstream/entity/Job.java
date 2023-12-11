@@ -1,5 +1,6 @@
 package com.talentstream.entity;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -13,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -29,7 +32,7 @@ public class Job {
 
     @Column(nullable = false)
     private String jobTitle;
-
+  
 	public JobRecruiter getJobRecruiter() {
 		return jobRecruiter;
 	}
@@ -110,6 +113,10 @@ public class Job {
     @Lob
     @Column
     private byte[] uploadDocument; // Use byte[] to store the file content
+    
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false, columnDefinition = "DATE")
+    private LocalDate creationDate;
 
 	public Long getId() {
 		return id;
@@ -218,6 +225,14 @@ public int getMaximumExperience() {
 
  	public void setUploadDocument(byte[] uploadDocument) {
 		this.uploadDocument = uploadDocument;
+	}
+
+	public LocalDate getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(LocalDate creationDate) {
+		this.creationDate = creationDate;
 	}
 
 }

@@ -27,14 +27,10 @@ public class CompanyProfileService {
         this.companyProfileRepository = companyProfileRepository;
     }
  
-    public CompanyProfile saveCompanyProfile(CompanyProfileDTO companyProfileDTO, @RequestPart("logo")  MultipartFile logo, Long jobRecruiterId) throws Exception {
+    public CompanyProfile saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
     	JobRecruiter jobRecruiter = jobRecruiterRepository.findByRecruiterId( jobRecruiterId);
-	   	 if (jobRecruiter != null) {
-	            // Convert DTO to Entity before saving
-	            CompanyProfile companyProfile = convertDTOToEntity(companyProfileDTO);
-	            if (logo != null && !logo.isEmpty()) {
-	                companyProfile.setLogo(logo.getBytes());
-	            }
+	   	 if (jobRecruiter != null) {	        
+	            CompanyProfile companyProfile = convertDTOToEntity(companyProfileDTO);	           
 	            companyProfile.setJobRecruiter(jobRecruiter);
 	            return companyProfileRepository.save(companyProfile);
 	        } 
@@ -55,8 +51,7 @@ public class CompanyProfileService {
         dto.setWebsite(companyProfile.getWebsite());
         dto.setPhoneNumber(companyProfile.getPhoneNumber());
         dto.setEmail(companyProfile.getEmail());
-        dto.setHeadOffice(companyProfile.getHeadOffice());
-        dto.setLogo(companyProfile.getLogo());
+        dto.setHeadOffice(companyProfile.getHeadOffice());      
         dto.setSocialProfiles(companyProfile.getSocialProfiles());
         return dto;
     }
@@ -64,7 +59,7 @@ public class CompanyProfileService {
     
     private CompanyProfile convertDTOToEntity(CompanyProfileDTO companyProfileDTO) {
         CompanyProfile entity = new CompanyProfile();
-        // Set fields accordingly
+  
         entity.setId(companyProfileDTO.getId());
         entity.setCompanyName(companyProfileDTO.getCompanyName());
         entity.setWebsite(companyProfileDTO.getWebsite());
@@ -72,8 +67,7 @@ public class CompanyProfileService {
         entity.setEmail(companyProfileDTO.getEmail());
         entity.setHeadOffice(companyProfileDTO.getHeadOffice());
         entity.setSocialProfiles(companyProfileDTO.getSocialProfiles());
-        entity.setLogo(companyProfileDTO.getLogo());
-        return entity;
+              return entity;
     }
 
 }

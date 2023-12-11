@@ -43,6 +43,17 @@ public class ApplicantImageService {
     	  	throw new CustomException("Applicant not found for ID: " + applicantId, HttpStatus.NOT_FOUND);
     	else
     	{
+    		 if (applicantImageRepository.existsByApplicant(applicant)) {
+    	            throw new CustomException("An image already exists for the applicant.", HttpStatus.BAD_REQUEST);
+    	        }
+    		 
+    		 if (imageFile.getSize() > 1 * 1024 * 1024) {
+    	            throw new CustomException("File size should be less than 1MB.", HttpStatus.BAD_REQUEST);
+    	        }
+    		 String contentType = imageFile.getContentType();
+    	        if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
+    	            throw new CustomException("Only JPG and PNG file types are allowed.", HttpStatus.BAD_REQUEST);
+    	        }
     	String name=StringUtils.cleanPath(imageFile.getOriginalFilename());    			
 		String fileName = applicantId + "_" + name;        
 		String filePath=applicantId + "_" + name;		 

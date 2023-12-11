@@ -1,6 +1,6 @@
 package com.talentstream.entity;
-import jakarta.persistence.*;
-//@Entity
+import javax.persistence.*;
+
 
 @Embeddable
 public class XClassDetails {

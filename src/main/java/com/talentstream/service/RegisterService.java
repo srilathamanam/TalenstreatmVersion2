@@ -120,7 +120,7 @@ public void updatePassword(String userEmail, String newPassword) {
         Applicant applicant = new Applicant();
         applicant.setName(registrationDTO.getName());
         applicant.setEmail(registrationDTO.getEmail());
-        applicant.setMobilenumber(registrationDTO.getMobileNumber());
+        applicant.setMobilenumber(registrationDTO.getMobilenumber());
         applicant.setPassword(registrationDTO.getPassword());       
         return applicant;
     }

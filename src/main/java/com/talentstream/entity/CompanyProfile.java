@@ -15,9 +15,7 @@ public class CompanyProfile {
     private String website;
     private String phoneNumber;
     private String email;
-    private String headOffice;
-    @Lob
-    private byte[] logo;  // Binary data of the logo
+    private String headOffice; 
  
   
 @OneToOne//(mappedBy = "companyProfile", cascade = CascadeType.ALL)
@@ -97,12 +95,6 @@ public class CompanyProfile {
 	public void setJobRecruiter(JobRecruiter jobRecruiter) {
 		this.jobRecruiter = jobRecruiter;
 	}
-	 public byte[] getLogo() {
-			return logo;
-		}
- 
-		public void setLogo(byte[] logo) {
-			this.logo = logo;
-		}
+	
  
 }

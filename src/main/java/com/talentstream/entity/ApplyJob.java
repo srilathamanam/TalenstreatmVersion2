@@ -12,7 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
- 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
  
 import javax.persistence.CascadeType;
@@ -38,6 +39,11 @@ public class ApplyJob {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date applicationDate;
+    
+    @OneToMany(mappedBy = "applyJob", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	@JsonIgnore
+	private List<ApplicantStatusHistory> statusHistory;
  
     @Column(nullable = false)
     private String applicantStatus = "New";

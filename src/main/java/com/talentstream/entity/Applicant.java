@@ -3,6 +3,8 @@ package com.talentstream.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +32,12 @@ public class Applicant {
     @JsonIgnore
     private Set<SavedJob> savedJobs = new HashSet<>();
     
-    
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Alerts> alerts=new HashSet<>();
+    public Set<Alerts> getAlerts() {
+		return alerts;
+	}
     @Column(nullable = false)
     private String roles="ROLE_JOBAPPLICANT";
 

@@ -55,10 +55,15 @@ public class SavedJobController {
             if (savedJobs.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-
-            List<JobDTO> savedJobsDTO = savedJobs.stream()
-                    .map(job -> modelMapper.map(job, JobDTO.class))
-                    .collect(Collectors.toList());
+	 List<JobDTO> savedJobsDTO = savedJobs.stream()
+            		.map(job -> {
+        	            JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+        	            jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+        	            jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+        	            jobDTO.setEmail(job.getJobRecruiter().getEmail());
+        	            return jobDTO;
+        	        })
+        	        .collect(Collectors.toList());
 
             return ResponseEntity.ok(savedJobsDTO);
         } catch (CustomException e) {

@@ -59,7 +59,15 @@ public class JobController {
             }
 
             List<JobDTO> jobDTOs = jobs.stream()
-                    .map(job -> modelMapper.map(job, JobDTO.class))
+            		.map(job -> {
+                        JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+                       
+                        jobDTO.setRecruiterId(job.getJobRecruiter().getRecruiterId());
+                        jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+                        jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+                        jobDTO.setEmail(job.getJobRecruiter().getEmail());
+                        return jobDTO;
+                    })
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(jobDTOs);
@@ -79,9 +87,14 @@ public class JobController {
                 return ResponseEntity.notFound().build();
             }
 
-            List<JobDTO> jobDTOs = jobs.stream()
-                    .map(job -> modelMapper.map(job, JobDTO.class))
-                    .collect(Collectors.toList());
+             List<JobDTO> jobDTOs = jobs.stream()
+                    .map(job ->{ JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+    	            jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+    	            jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+    	            jobDTO.setEmail(job.getJobRecruiter().getEmail());
+    	            return jobDTO;
+    	        })
+    	        .collect(Collectors.toList());
 
             return ResponseEntity.ok(jobDTOs);
         } catch (CustomException ce) {
@@ -158,6 +171,10 @@ public class JobController {
         jobDTO.setIndustryType(job.getIndustryType());
         jobDTO.setMinimumQualification(job.getMinimumQualification());
         jobDTO.setSpecialization(job.getSpecialization());
+	     jobDTO.setRecruiterId(job.getId());
+        jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+        jobDTO.setEmail(job.getJobRecruiter().getEmail());
+        jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber()); 
         Set<RecuriterSkillsDTO> skillsDTOList = job.getSkillsRequired().stream()
                 .map(this::convertSkillsEntityToDTO)
                 .collect(Collectors.toSet());

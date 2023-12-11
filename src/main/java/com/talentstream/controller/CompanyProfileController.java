@@ -2,13 +2,9 @@ package com.talentstream.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
- 
+import org.springframework.web.bind.annotation.*; 
 import com.talentstream.dto.CompanyProfileDTO;
-import com.talentstream.entity.CompanyProfile;
 import com.talentstream.service.CompanyProfileService;
 import java.util.Optional;
 import com.talentstream.exception.CustomException;
@@ -28,10 +24,10 @@ public class CompanyProfileController {
 	    }
 	 
 	    
-	    @PostMapping(value="/recruiters/company-profiles/{jobRecruiterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	    public ResponseEntity<String> createCompanyProfile( @RequestPart("logo")  MultipartFile logo,@RequestPart CompanyProfileDTO companyProfileDTO,@PathVariable Long jobRecruiterId) {
+	    @PostMapping(value="/recruiters/company-profiles/{jobRecruiterId}")
+	    public ResponseEntity<String> createCompanyProfile(@RequestBody CompanyProfileDTO companyProfileDTO,@PathVariable Long jobRecruiterId) {
 	       	try {
-	           companyProfileService.saveCompanyProfile(companyProfileDTO,logo,jobRecruiterId);
+	           companyProfileService.saveCompanyProfile(companyProfileDTO,jobRecruiterId);
 	           return ResponseEntity.status(HttpStatus.OK).body("{\"message\": \"CompanyProfile saved successfully.\"}");
 	        } catch (CustomException ce) {
 	            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
