@@ -29,7 +29,7 @@ public class WebConfig {
         config.addAllowedOrigin("http://localhost:3000");
         // config.addAllowedOrigin("https://talent-stream-front-end-version2-26cniod9h-eedekarunakar.vercel.app");
         
-            config.addAllowedOrigin("*");
+            // config.addAllowedOrigin("*");
 
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
