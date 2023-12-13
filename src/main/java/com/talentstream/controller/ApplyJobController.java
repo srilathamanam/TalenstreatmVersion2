@@ -102,6 +102,20 @@ public class ApplyJobController {
 	    }
   
  }
+
+	@GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/status/{status}")
+ public ResponseEntity<List<AppliedApplicantInfoDTO>> getAppliedApplicantsByStatus(
+         @PathVariable long jobRecruiterId,
+         @PathVariable String status) {
+     try {
+         List<AppliedApplicantInfoDTO> applicantsByStatus = applyJobService.getAppliedApplicantsByStatus(jobRecruiterId, status);
+         return ResponseEntity.ok(applicantsByStatus);
+     } catch (CustomException e) {
+         return ResponseEntity.status(e.getStatus()).body(new ArrayList<>());
+     } catch (Exception e) {
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+     }
+ }
  @PostMapping("/scheduleInterview/{applyJobId}")
  public ResponseEntity<Void> createScheduleInterview(
          @PathVariable Long applyJobId,
