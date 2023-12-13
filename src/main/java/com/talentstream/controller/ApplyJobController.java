@@ -131,7 +131,7 @@ public class ApplyJobController {
  }
    
    
-   @PostMapping("/recruiters/applyjob-update-status/{applyJobId}/{newStatus}")
+   @PutMapping("/recruiters/applyjob-update-status/{applyJobId}/{newStatus}")
    public ResponseEntity<String> updateApplicantStatus(
            @PathVariable Long applyJobId,
            @PathVariable String newStatus) {
