@@ -161,6 +161,18 @@ public long countShortlistedAndInterviewedApplicants() {
         throw new CustomException("Failed to count shortlisted and interviewed applicants", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
+	public List<AppliedApplicantInfoDTO> getAppliedApplicantsByStatus(long jobRecruiterId, String applicantStatus) {
+	
+	List<AppliedApplicantInfo> appliedApplicantInfo = applyJobRepository.findByJobJobRecruiterRecruiterIdAndApplicantStatus(jobRecruiterId, applicantStatus);
+
+	List<AppliedApplicantInfoDTO> dtoList = new ArrayList<>();
+	for (AppliedApplicantInfo appliedApplicantInfo1 : appliedApplicantInfo) {
+	    AppliedApplicantInfoDTO dto = mapToDTO(appliedApplicantInfo1);
+	    dtoList.add(dto);
+	}
+	return dtoList;
+}
 }
 
 	    
