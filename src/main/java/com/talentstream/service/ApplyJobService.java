@@ -110,7 +110,7 @@ private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantIn
     dto.setMinimumExperience(appliedApplicantInfo.getMinimumExperience());
     dto.setSkillName(appliedApplicantInfo.getSkillName());
     dto.setLocation(appliedApplicantInfo.getLocation());
-    dto.setLocation(appliedApplicantInfo.getLocation()); 
+ 	dto.setMinimumQualification(appliedApplicantInfo.getMinimumQualification());
       return dto;
 }
  
