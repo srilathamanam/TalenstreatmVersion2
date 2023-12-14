@@ -50,7 +50,14 @@ public class JobRecruiterController {
     @PostMapping("/saverecruiters")
     public ResponseEntity<String> registerRecruiter(@RequestBody JobRecruiterDTO recruiterDTO) {
         JobRecruiter recruiter = convertToEntity(recruiterDTO);
-        return recruiterService.saveRecruiter(recruiter);
+             
+        try {
+	             return recruiterService.saveRecruiter(recruiter);
+	        } catch (CustomException e) {
+	            return ResponseEntity.badRequest().body(e.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
+	        }
     }
 
 
