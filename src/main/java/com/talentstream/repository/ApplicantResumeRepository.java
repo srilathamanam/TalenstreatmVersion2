@@ -12,4 +12,6 @@ public interface ApplicantResumeRepository extends JpaRepository<ApplicantResume
 
 	ApplicantResume findById(Applicant applicant);
 
+	ApplicantResume findByApplicantId(long applicantId);
+
 }

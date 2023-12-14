@@ -86,7 +86,10 @@ public void updatePassword(String userEmail, String newPassword) {
 
 	}
 
-		public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
+	
+
+ 
+	public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
 		try {
 			
 			  Applicant applicant = mapRegistrationDTOToApplicant(registrationDTO);
@@ -107,7 +110,6 @@ public void updatePassword(String userEmail, String newPassword) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
         }
 	}
-
 
 
 	public void addApplicant(Applicant applicant) {

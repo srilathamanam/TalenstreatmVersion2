@@ -3,7 +3,6 @@ package com.talentstream.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,11 +25,9 @@ public class ApplicantResumeController {
 	@Autowired
     private ApplicantResumeService applicantResumeService;
 	
-	@Value("${project.applicant-pdf-folder}")
-	private String path;
-	
+
     @PostMapping("/{applicantId}/upload")
-    public String fileUpload(@PathVariable Long applicantId,@RequestParam("resume")MultipartFile resume) 
+    public String fileUpload(@PathVariable Long applicantId,@RequestParam("resume") MultipartFile resume) 
     {
     	try {
             String filename = this.applicantResumeService.UploadPdf(applicantId, resume);
@@ -47,20 +44,9 @@ public class ApplicantResumeController {
         }
     }
     
-    @GetMapping("/{applicantId}/download")
-    public ResponseEntity<Resource> downloadPDF(@PathVariable Long applicantId) throws IOException {
-    	try {
-    	Resource resource = applicantResumeService.downloadPdf(applicantId);
-		return ResponseEntity.ok()
-		        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-		        .contentType(MediaType.APPLICATION_PDF)
-		        .body(resource);
-    } catch (CustomException ce) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    @GetMapping("/getresume/{applicantId}")
+    public ResponseEntity<Resource> getResume(@PathVariable long applicantId) throws IOException {
+        return applicantResumeService.getResumeByApplicantId(applicantId);
     }
- 
-    }
+    
 }

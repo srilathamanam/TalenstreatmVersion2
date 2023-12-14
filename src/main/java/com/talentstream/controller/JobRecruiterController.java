@@ -20,6 +20,7 @@ import com.talentstream.entity.AuthenticationResponse;
 import com.talentstream.entity.JobRecruiter;
 import com.talentstream.entity.RecruiterLogin;
 import com.talentstream.entity.ResetPasswordRequest;
+import com.talentstream.exception.CustomException;
 import com.talentstream.service.EmailService;
 import com.talentstream.service.JobRecruiterService;
 import org.slf4j.Logger;

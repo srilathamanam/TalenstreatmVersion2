@@ -1,6 +1,5 @@
 package com.talentstream.entity;
 
-import java.util.Date;
 
 public class AppliedApplicantInfoDTO {
 	private Long applyjobid;

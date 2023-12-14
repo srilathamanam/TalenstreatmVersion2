@@ -1,15 +1,14 @@
 package com.talentstream.dto;
 
-import lombok.Data;
 
 
 public class RegistrationDTO {
 	 private String name;
 	    private String email;
 	    private String mobilenumber;
+	    
 	    private String password;
-	
-public String getName() {
+		public String getName() {
 			return name;
 		}
 		public void setName(String name) {
@@ -36,4 +35,3 @@ public String getName() {
 		}
 	    
 }
-

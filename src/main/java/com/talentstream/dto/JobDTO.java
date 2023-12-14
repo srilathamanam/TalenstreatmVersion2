@@ -34,7 +34,7 @@ public class JobDTO {
 	    private String location;
 	    private String employeeType;
 	    private String industryType;
-	    private String minimumQualification;
+	    private String minimumQualification;	 
 	    private String specialization;
 	    private Set<RecuriterSkillsDTO> skillsRequired;
 	    private String jobHighlights;

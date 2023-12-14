@@ -36,7 +36,10 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 	
 	long countByApplicantStatusIn(List<String> applicantStatusList);
 	
-	List<ApplyJob> findByJobId(Long jobId);
+	List<ApplyJob> findByJobId(Long jobId);	
+
+	//List<AppliedApplicantInfo> findByJobJobRecruiterRecruiterIdAndApplicantStatus(long jobRecruiterId, String applicantStatus);
+
 	@Query("SELECT NEW com.talentstream.entity.AppliedApplicantInfo(" +
 		       " aj.applyjobid, a.name, a.email, a.mobilenumber, j.jobTitle, aj.applicantStatus, " +
 		       " j.minimumExperience, s.skillName, " +
@@ -52,4 +55,6 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 		    @Param("applicantStatus") String applicantStatus
 		);
 	 
+
+
 }

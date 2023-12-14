@@ -1,17 +1,14 @@
 package com.talentstream.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
- 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service; 
 import com.talentstream.dto.CompanyProfileDTO;
 import com.talentstream.entity.CompanyProfile;
 import com.talentstream.entity.JobRecruiter;
+import com.talentstream.exception.CustomException;
 import com.talentstream.repository.CompanyProfileRepository;
 import com.talentstream.repository.JobRecruiterRepository;
- 
-import java.util.List;
 import java.util.Optional;
  
 @Service
@@ -26,7 +23,6 @@ public class CompanyProfileService {
     public CompanyProfileService(CompanyProfileRepository companyProfileRepository) {
         this.companyProfileRepository = companyProfileRepository;
     }
- 
     public String saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
     	JobRecruiter jobRecruiter = jobRecruiterRepository.findByRecruiterId( jobRecruiterId);
     	  

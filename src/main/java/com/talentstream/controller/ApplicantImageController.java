@@ -22,21 +22,19 @@ import com.talentstream.exception.CustomException;
 import com.talentstream.exception.UnsupportedFileTypeException;
 import com.talentstream.service.ApplicantImageService;
 
+
 @RestController
 @RequestMapping("/applicant-image")
 public class ApplicantImageController {
 	
 	@Autowired
     private ApplicantImageService applicantImageService;
-	
-	@Value("${project.photo-image-folder}")
-	private String path;
-	
+		
     @PostMapping("/{applicantId}/upload")
     public String fileUpload(@PathVariable Long applicantId,@RequestParam("photo")MultipartFile photo) 
     {
     	 try {
-    	        String filename = this.applicantImageService.UploadImage(applicantId, photo);
+    	        String filename = this.applicantImageService.uploadImage(applicantId, photo);
     	        return "Image uploaded successfully. Filename: " + filename;
     	    } catch (CustomException ce) {
     	        return ce.getMessage();
@@ -49,22 +47,9 @@ public class ApplicantImageController {
     	        return "Image not uploaded successfully";
     	    }
     }
+    @GetMapping("/getphoto/{applicantId}")
+    public ResponseEntity<Resource> getProfilePic(@PathVariable long applicantId) throws IOException {
+        return applicantImageService.getProfilePicByApplicantId(applicantId);
+    }
     
-    @GetMapping("/{applicantId}/download")
-    public ResponseEntity<Resource> downloadImage(@PathVariable Long applicantId) throws IOException {
-    	try {
-    	Resource resource = applicantImageService.downloadImage(applicantId);
-    	String contentType = Files.probeContentType(resource.getFile().toPath());
-		return ResponseEntity.ok()
-		        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-		        .contentType(MediaType.parseMediaType(contentType))
-		        .body(resource);
-    } catch (CustomException ce) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
- 
-    }
 }

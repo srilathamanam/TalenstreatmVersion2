@@ -66,12 +66,12 @@ public class FindRecommendedJobController {
         jobDTO.setLocation(job.getLocation());
         jobDTO.setEmployeeType(job.getEmployeeType());
         jobDTO.setIndustryType(job.getIndustryType());
-        jobDTO.setMinimumQualification(job.getMinimumQualification());
-	    jobDTO.setRecruiterId(job.getId());
-         jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+        jobDTO.setMinimumQualification(job.getMinimumQualification());        
+        jobDTO.setRecruiterId(job.getId());
+        jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
         jobDTO.setEmail(job.getJobRecruiter().getEmail());
         jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
-        jobDTO.setSpecialization(job.getSpecialization());
+        
         Set<RecuriterSkillsDTO> skillsDTOList = job.getSkillsRequired().stream()
                 .map(this::convertSkillsEntityToDTO)
                 .collect(Collectors.toSet());

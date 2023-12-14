@@ -104,13 +104,15 @@ private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantIn
     dto. setApplyjobid(appliedApplicantInfo.getApplyjobid());
     dto.setName(appliedApplicantInfo.getName());
     dto.setEmail(appliedApplicantInfo.getEmail());
+ 
     dto.setMobilenumber(appliedApplicantInfo.getMobilenumber());
     dto.setJobTitle(appliedApplicantInfo.getJobTitle());
     dto.setApplicantStatus(appliedApplicantInfo.getApplicantStatus());    
     dto.setMinimumExperience(appliedApplicantInfo.getMinimumExperience());
+    dto.setMinimumQualification(appliedApplicantInfo.getMinimumQualification());
     dto.setSkillName(appliedApplicantInfo.getSkillName());
     dto.setLocation(appliedApplicantInfo.getLocation());
- 	dto.setMinimumQualification(appliedApplicantInfo.getMinimumQualification());
+  
       return dto;
 }
  
@@ -162,7 +164,7 @@ public long countShortlistedAndInterviewedApplicants() {
     }
 }
 
-	public List<AppliedApplicantInfoDTO> getAppliedApplicantsByStatus(long jobRecruiterId, String applicantStatus) {
+public List<AppliedApplicantInfoDTO> getAppliedApplicantsByStatus(long jobRecruiterId, String applicantStatus) {
 	
 	List<AppliedApplicantInfo> appliedApplicantInfo = applyJobRepository.findByJobJobRecruiterRecruiterIdAndApplicantStatus(jobRecruiterId, applicantStatus);
 
@@ -173,6 +175,8 @@ public long countShortlistedAndInterviewedApplicants() {
 	}
 	return dtoList;
 }
+
 }
+
 
 	    

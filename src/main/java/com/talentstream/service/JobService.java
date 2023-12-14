@@ -123,6 +123,7 @@ public class JobService {
         job.setSkillsRequired(convertSkillsDTOToEntity(jobDTO.getSkillsRequired()));
         job.setJobHighlights(jobDTO.getJobHighlights());
         job.setDescription(jobDTO.getDescription());
+       
       //  job.setUploadDocument(Base64.getDecoder().decode(jobDTO.getUploadDocument())); // Decode base64 string
 
         return job;

@@ -24,7 +24,7 @@ public class CompanyProfileController {
 	    }
 	 
 	    
-	   @PostMapping(value="/recruiters/company-profiles/{jobRecruiterId}")
+	    @PostMapping(value="/recruiters/company-profiles/{jobRecruiterId}")
 	    public ResponseEntity<String> createCompanyProfile(@RequestBody CompanyProfileDTO companyProfileDTO,@PathVariable Long jobRecruiterId) {
 	       	try {
 	           companyProfileService.saveCompanyProfile(companyProfileDTO,jobRecruiterId);

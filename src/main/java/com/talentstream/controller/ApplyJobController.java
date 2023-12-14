@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,8 +103,10 @@ public class ApplyJobController {
 	    }
   
  }
-
-	@GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/status/{status}")
+ 
+ 
+ 
+ @GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/status/{status}")
  public ResponseEntity<List<AppliedApplicantInfoDTO>> getAppliedApplicantsByStatus(
          @PathVariable long jobRecruiterId,
          @PathVariable String status) {
@@ -116,7 +119,7 @@ public class ApplyJobController {
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
      }
  }
- @PostMapping("/scheduleInterview/{applyJobId}")
+ @PostMapping("/recruiters/scheduleInterview/{applyJobId}")
  public ResponseEntity<Void> createScheduleInterview(
          @PathVariable Long applyJobId,
          @RequestBody ScheduleInterviewDTO scheduleInterviewDTO) {

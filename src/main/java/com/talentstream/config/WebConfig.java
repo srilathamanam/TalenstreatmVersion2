@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 
@@ -23,13 +23,13 @@ public class WebConfig {
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
-  
+        config.setAllowCredentials(true);
+   //https://talent-tracker-front-k336pfj8a-madar1992.vercel.app
         
-        // config.addAllowedOrigin("http://localhost:3000");
-        //  config.addAllowedOrigin("https://talent-stream-front-end-version2-kwrsb2zt1-eedekarunakar.vercel.app");
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://talent-stream-version2-ldo1j2kfn-eedekarunakar.vercel.app");
         
-            config.addAllowedOrigin("https://talent-stream-front-end-version2-eedekarunakar.vercel.app");
+
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
@@ -46,5 +46,9 @@ public class WebConfig {
         // should be set order to -100 because we need to CorsFilter before SpringSecurityFilter
         bean.setOrder(CORS_FILTER_ORDER);
         return bean;
+    }
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().antMatchers("/applicant/photos/**");
+        webSecurity.ignoring().antMatchers("/applicant/resumes/**");
     }
 }

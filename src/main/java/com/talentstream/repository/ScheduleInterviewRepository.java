@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
  
 import com.talentstream.entity.ApplicantJobInterviewDTO;
+import com.talentstream.entity.AppliedApplicantInfoDTO;
 import com.talentstream.entity.ScheduleInterview;
  
 @Repository
@@ -30,6 +31,8 @@ public interface ScheduleInterviewRepository extends JpaRepository<ScheduleInter
 	    List<ScheduleInterview> findScheduleInterviewsForCurrentDate();
 	@Query(value = "SELECT * FROM schedule_interview si WHERE si.apply_job_id IN (SELECT aj.applyjobid FROM ApplyJob aj WHERE aj.applicant_id = ?)", nativeQuery = true)
 	List<ScheduleInterview> findByApplicantIdAndApplyJobId(Long applicantId, Long applyJobId);
+	
+
  
 }
  

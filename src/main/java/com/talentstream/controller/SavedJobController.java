@@ -55,7 +55,8 @@ public class SavedJobController {
             if (savedJobs.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-	 List<JobDTO> savedJobsDTO = savedJobs.stream()
+
+            List<JobDTO> savedJobsDTO = savedJobs.stream()
             		.map(job -> {
         	            JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
         	            jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());

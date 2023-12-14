@@ -12,7 +12,9 @@ public interface JobRecruiterRepository extends JpaRepository<JobRecruiter, Long
     // Additional query methods can be defined here if needed
 
 	boolean existsByEmail(String email);	
-		JobRecruiter findByRecruiterId(Long id);
+	
+	JobRecruiter findByRecruiterId(Long id);
+
 	boolean existsByMobilenumber(String mobilenumber);
 }
 
