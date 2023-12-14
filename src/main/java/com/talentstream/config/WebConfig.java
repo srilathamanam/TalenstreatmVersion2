@@ -23,13 +23,13 @@ public class WebConfig {
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
+       // config.setAllowCredentials(true);
    //https://talent-tracker-front-k336pfj8a-madar1992.vercel.app
         
-     // config.addAllowedOrigin("http://localhost:3000");
-      //  config.addAllowedOrigin("https://talent-stream-front-end-version2-eedekarunakar.vercel.app");
+     config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://talent-stream-front-end-version2-eedekarunakar.vercel.app");
         
-config.addAllowedOrigin("talent-stream-front-end-version2-djgullodv-eedekarunakar.vercel.app");
+//config.addAllowedOrigin("talent-stream-front-end-version2-djgullodv-eedekarunakar.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
