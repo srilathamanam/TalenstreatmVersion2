@@ -12,7 +12,8 @@ public interface JobRecruiterRepository extends JpaRepository<JobRecruiter, Long
     // Additional query methods can be defined here if needed
 
 	boolean existsByEmail(String email);	
-	
-	JobRecruiter findByRecruiterId(Long id);
+		JobRecruiter findByRecruiterId(Long id);
+	 @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CompanyProfile c WHERE c.jobRecruiter.recruiterId = :recruiterId")
+	    boolean existsByJobRecruiterId(@Param("recruiterId") Long recruiterId);
 }
 
