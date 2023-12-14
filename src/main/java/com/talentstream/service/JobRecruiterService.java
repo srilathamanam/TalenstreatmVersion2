@@ -35,6 +35,10 @@ public class JobRecruiterService {
 	            if (recruiterRepository.existsByEmail(recruiter.getEmail()) || applicantRepository.existsByEmail(recruiter.getEmail())) {
 	                throw new CustomException("Failed to register/Email already exists", HttpStatus.BAD_REQUEST);
 	            }
+	            if(recruiterRepository.existsByMobilenumber(recruiter.getMobilenumber())||applicantRepository.existsByMobilenumber(recruiter.getMobilenumber()))
+	            {
+	            	throw new CustomException("Mobile number already existed ,enter new mobile number",null);
+	            }
 	            recruiter.setPassword(passwordEncoder.encode(recruiter.getPassword()));
 	            recruiterRepository.save(recruiter);
 	            return ResponseEntity.ok("Recruiter registered successfully");
