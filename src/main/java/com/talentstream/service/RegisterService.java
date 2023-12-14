@@ -86,16 +86,18 @@ public void updatePassword(String userEmail, String newPassword) {
 
 	}
 
-	
-
- 
-	public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
+		public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
 		try {
 			
 			  Applicant applicant = mapRegistrationDTOToApplicant(registrationDTO);
             if (applicantRepository.existsByEmail(applicant.getEmail()) || recruiterRepository.existsByEmail(applicant.getEmail())) {
                 throw new CustomException("Email already registered",null);
             }
+            if(applicantRepository.existsByMobilenumber(applicant.getMobilenumber())||recruiterRepository.existsByMobilenumber(applicant.getMobilenumber()))
+            {
+            	throw new CustomException("Mobile number already existed ,enter new mobile number",null);
+            }
+            
             applicant.setPassword(passwordEncoder.encode(applicant.getPassword()));
             applicantRepository.save(applicant);
             return ResponseEntity.ok("Applicant registered successfully");
@@ -105,6 +107,7 @@ public void updatePassword(String userEmail, String newPassword) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
         }
 	}
+
 
 
 	public void addApplicant(Applicant applicant) {
