@@ -37,7 +37,7 @@ public class JobRecruiterService {
 	            }
 	            if(recruiterRepository.existsByMobilenumber(recruiter.getMobilenumber())||applicantRepository.existsByMobilenumber(recruiter.getMobilenumber()))
 	            {
-	            	throw new CustomException("Mobile number already existed ,enter new mobile number",null);
+	            	throw new CustomException("Mobile number already existed",null);
 	            }
 	            recruiter.setPassword(passwordEncoder.encode(recruiter.getPassword()));
 	            recruiterRepository.save(recruiter);
