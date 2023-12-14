@@ -49,9 +49,6 @@ public class WebConfig {
         bean.setOrder(CORS_FILTER_ORDER);
         return bean;
     }
-public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/applicant/photos/**");
-        webSecurity.ignoring().antMatchers("/applicant/resumes/**");
-    }
+
 }
  
