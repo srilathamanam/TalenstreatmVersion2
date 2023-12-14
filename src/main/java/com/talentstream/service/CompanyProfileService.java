@@ -27,17 +27,25 @@ public class CompanyProfileService {
         this.companyProfileRepository = companyProfileRepository;
     }
  
-    public CompanyProfile saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
+    public String saveCompanyProfile(CompanyProfileDTO companyProfileDTO, Long jobRecruiterId) throws Exception {
     	JobRecruiter jobRecruiter = jobRecruiterRepository.findByRecruiterId( jobRecruiterId);
-	   	 if (jobRecruiter != null) {	        
-	            CompanyProfile companyProfile = convertDTOToEntity(companyProfileDTO);	           
-	            companyProfile.setJobRecruiter(jobRecruiter);
-	            return companyProfileRepository.save(companyProfile);
-	        } 
-	   	 else {
-	            throw new Exception("JobRecruiter with ID " + jobRecruiterId + " not found.");
-	        }
-   }
+    	  
+    	    	 if(jobRecruiter==null)	
+    	    		 throw new CustomException("Recruiter not found for ID: " + jobRecruiterId, HttpStatus.NOT_FOUND);
+    	    	 else
+    		    	{    	    			   		    		
+    		        if ( !companyProfileRepository.existsByJobRecruiterId(jobRecruiterId)) {
+    		        	 	 	CompanyProfile companyProfile= convertDTOToEntity(companyProfileDTO);
+    		        	companyProfile.setJobRecruiter(jobRecruiter);	        
+    		        	companyProfileRepository.save(companyProfile);
+    		       
+    		            return "profile saved sucessfully";
+    		        } 
+    		        else {
+    		        	
+    		        	throw new CustomException("CompanyProfile was already updated.", HttpStatus.BAD_REQUEST);
+    		        } 
+    		    	}   }
  
     public Optional<CompanyProfileDTO> getCompanyProfileById(Long id) {
         Optional<CompanyProfile> companyProfile = companyProfileRepository.findById(id);
