@@ -98,7 +98,7 @@ public void updatePassword(String userEmail, String newPassword) {
             }
             if(applicantRepository.existsByMobilenumber(applicant.getMobilenumber())||recruiterRepository.existsByMobilenumber(applicant.getMobilenumber()))
             {
-            	throw new CustomException("Mobile number already existed ,enter new mobile number",null);
+            	throw new CustomException("Mobile number already existed",null);
             }
             
             applicant.setPassword(passwordEncoder.encode(applicant.getPassword()));
