@@ -65,8 +65,9 @@ public class CompanyLogoService {
     		        if (!isValidFormat(logoFile.getOriginalFilename())) {
     		            throw new CustomException("Image format not accepted. ", HttpStatus.BAD_REQUEST);
     		        }
-
+                       // check, if the size of the logo file exceeds the maximum allowed size
     		        if (logoFile.getSize() > MAX_FILE_SIZE_BYTES) {
+				// Throw a custom exception with the error message and HTTP status code (BAD_REQUEST)
     		            throw new CustomException("File size should be less than or equal to " + (MAX_FILE_SIZE_BYTES / 1024) + " KB. ", HttpStatus.BAD_REQUEST);
     		        }
 
@@ -92,11 +93,12 @@ public class CompanyLogoService {
     		    }
     		  }
 
-    		    public String getFileExtension(String filename) {
+    		/*    public String getFileExtension(String filename) {
     		        int dotIndex = filename.lastIndexOf('.');
     		        return (dotIndex == -1) ? "" : filename.substring(dotIndex);
-    		    }
+    		    }  */
 
+	       //validate the image format extension
     		    private boolean isValidFormat(String filename) {
     		        int dotIndex = filename.lastIndexOf('.');
     		        String ext = (dotIndex == -1) ? "" : filename.substring(dotIndex + 1).toLowerCase();
