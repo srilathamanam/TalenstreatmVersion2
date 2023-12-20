@@ -175,7 +175,7 @@ public class JobController {
         jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
         jobDTO.setEmail(job.getJobRecruiter().getEmail());
         jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber()); 
-	jobDTO.setCreationTime(job.getCreationTime());
+	jobDTO.setCreationDate(job.getCreationDate());
         Set<RecuriterSkillsDTO> skillsDTOList = job.getSkillsRequired().stream()
                 .map(this::convertSkillsEntityToDTO)
                 .collect(Collectors.toSet());
