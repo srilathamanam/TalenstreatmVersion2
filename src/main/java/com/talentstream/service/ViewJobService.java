@@ -19,9 +19,14 @@ public ResponseEntity<?> getJobDetailsForApplicant(Long jobId) {
 	
     final ModelMapper modelMapper = new ModelMapper();
 	Job job = jobRepository.findById(jobId).orElse(null);
-
+ 
 	if (job != null) {
         JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+        jobDTO.setRecruiterId(job.getJobRecruiter().getRecruiterId());
+        jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
+        jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+        jobDTO.setEmail(job.getJobRecruiter().getEmail());
+        jobDTO.setJobStatus(job.getJobStatus());
         return ResponseEntity.ok(jobDTO);
     } else {
         throw new CustomException("Job with ID " + jobId + " not found.", HttpStatus.INTERNAL_SERVER_ERROR);

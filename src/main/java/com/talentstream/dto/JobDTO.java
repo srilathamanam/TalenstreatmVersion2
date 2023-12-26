@@ -1,5 +1,6 @@
 package com.talentstream.dto;
 
+import java.time.LocalDate;
 import java.util.Set;
 public class JobDTO {
 	 private Long id;
@@ -34,11 +35,28 @@ public class JobDTO {
 	    private String location;
 	    private String employeeType;
 	    private String industryType;
-	    private String minimumQualification;	 
+	    private String minimumQualification;
 	    private String specialization;
 	    private Set<RecuriterSkillsDTO> skillsRequired;
 	    private String jobHighlights;
 	    private String description;
+	    private LocalDate creationDate;
+	    private String jobStatus="Apply Now";	   
+	    private Long applyJobId;	   
+	    public Long getApplyJobId() {
+	    	        return applyJobId;
+	    	    }
+	     
+	    	    public void setApplyJobId(Long applyJobId) {
+	    	        this.applyJobId = applyJobId;
+	    	    }
+	    
+		public String getJobStatus() {
+			return jobStatus;
+		}
+		public void setJobStatus(String jobStatus) {
+			this.jobStatus = jobStatus;
+		}
 		public Long getId() {
 			return id;
 		}
@@ -128,6 +146,12 @@ public class JobDTO {
 		}
 		public void setRecruiterId(Long recruiterId) {
 			this.recruiterId = recruiterId;
+		}
+		public LocalDate getCreationDate() {
+			return creationDate;
+		}
+		public void setCreationDate(LocalDate creationDate) {
+			this.creationDate = creationDate;
 		}
 	    
 	    

@@ -43,7 +43,7 @@ public class SearchForaJobController {
                 return ResponseEntity.noContent().build();
             }
 
-            Page<JobDTO> jobsDTO = jobs.map(job -> {
+          Page<JobDTO> jobsDTO = jobs.map(job -> {
                 JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
                 jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
                 jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());

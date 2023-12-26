@@ -36,25 +36,27 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 	
 	long countByApplicantStatusIn(List<String> applicantStatusList);
 	
-	List<ApplyJob> findByJobId(Long jobId);	
-
-	//List<AppliedApplicantInfo> findByJobJobRecruiterRecruiterIdAndApplicantStatus(long jobRecruiterId, String applicantStatus);
-
-	@Query("SELECT NEW com.talentstream.entity.AppliedApplicantInfo(" +
-		       " aj.applyjobid, a.name, a.email, a.mobilenumber, j.jobTitle, aj.applicantStatus, " +
-		       " j.minimumExperience, s.skillName, " +
-		       "j.minimumQualification, j.location) " +
+	List<ApplyJob> findByJobId(Long jobId);
+	
+	@Query("SELECT DISTINCT aj " +
 		       "FROM ApplyJob aj " +
-		       "INNER JOIN aj.applicant a " +
-		       "INNER JOIN aj.job j " +
-		       "INNER JOIN j.skillsRequired s " +
-		       "INNER JOIN j.jobRecruiter r " +
-		       "WHERE r.id = :jobRecruiterId AND aj.applicantStatus = :applicantStatus")
-		List<AppliedApplicantInfo> findByJobJobRecruiterRecruiterIdAndApplicantStatus(
-		    @Param("jobRecruiterId") long jobRecruiterId, 
-		    @Param("applicantStatus") String applicantStatus
-		);
-	 
+		       "LEFT JOIN FETCH aj.job j " +
+		       "LEFT JOIN FETCH j.skillsRequired s " +
+		       "WHERE (:jobTitle IS NULL OR LOWER(j.jobTitle) LIKE LOWER(CONCAT('%', :jobTitle, '%'))) " +
+		       "AND (:location IS NULL OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) " +
+		       "AND (:skillName IS NULL OR LOWER(s.skillName) = LOWER(:skillName))")
+		List<ApplyJob> findByJobTitleAndLocationAndSkillName(
+		        @Param("jobTitle") String jobTitle,
+		        @Param("location") String location,
+		        @Param("skillName") String skillName);
 
-
+	@Query("SELECT COUNT(a) FROM ApplyJob a WHERE a.applicant.id = :applicantId")
+    long countByApplicantId(@Param("applicantId") long applicantId);
+	
+	@Query(value = "SELECT COUNT(*) FROM apply_job aj " +
+            "JOIN Job j ON aj.job_id = j.id " +
+            "WHERE j.job_recruiter_recruiter_id = :recruiterId " +
+            "AND aj.applicant_status IN :statusList", nativeQuery = true)
+long countShortlistedAndInterviewedApplicants(@Param("recruiterId") Long recruiterId,
+                                           @Param("statusList") List<String> statusList);
 }

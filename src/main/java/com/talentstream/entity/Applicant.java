@@ -40,6 +40,9 @@ public class Applicant {
 	}
     @Column(nullable = false)
     private String roles="ROLE_JOBAPPLICANT";
+    
+    @Column(columnDefinition = "int default 0")
+    private int alertCount;
 
 	public long getId() {
 		return id;
@@ -103,8 +106,17 @@ public class Applicant {
 
 	public void setRoles(String roles) {
 		this.roles = roles;
-	} 
-    
-    
-	
+	}
+
+	public int getAlertCount() {
+		return alertCount;
+	}
+
+	public void setAlertCount(int alertCount) {
+		this.alertCount = alertCount;
+	}
+
+	public void setAlerts(Set<Alerts> alerts) {
+		this.alerts = alerts;
+	} 	
 }

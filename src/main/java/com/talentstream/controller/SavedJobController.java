@@ -55,8 +55,7 @@ public class SavedJobController {
             if (savedJobs.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-
-            List<JobDTO> savedJobsDTO = savedJobs.stream()
+	 List<JobDTO> savedJobsDTO = savedJobs.stream()
             		.map(job -> {
         	            JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
         	            jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
@@ -71,6 +70,19 @@ public class SavedJobController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+    
+    
+    @GetMapping("/countSavedJobs/{applicantId}")
+    public ResponseEntity<?> countSavedJobsForApplicant(@PathVariable long applicantId) {
+        try {
+            long count = savedJobService.countSavedJobsForApplicant(applicantId);
+            return ResponseEntity.ok(count);
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
 }

@@ -18,6 +18,7 @@ import com.talentstream.response.ResponseHandler;
 import com.talentstream.dto.JobRecruiterDTO;
 import com.talentstream.entity.AuthenticationResponse;
 import com.talentstream.entity.JobRecruiter;
+import com.talentstream.entity.PasswordRequest;
 import com.talentstream.entity.RecruiterLogin;
 import com.talentstream.entity.ResetPasswordRequest;
 import com.talentstream.exception.CustomException;
@@ -125,4 +126,13 @@ public class JobRecruiterController {
 
         return recruiter;
     }
+	
+
+@PostMapping("/authenticateRecruiter/{id}")
+    public String authenticateRecruiter(@PathVariable Long id, @RequestBody PasswordRequest passwordRequest) {
+        String newpassword = passwordRequest.getNewpassword();
+        String oldpassword = passwordRequest.getOldpassword();
+        return recruiterService.authenticateRecruiter(id, oldpassword, newpassword);
+    }
+	
 }

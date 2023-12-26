@@ -3,7 +3,9 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.talentstream.dto.JobDTO;
 import com.talentstream.dto.ScheduleInterviewDTO;
+import com.talentstream.entity.Alerts;
+import com.talentstream.entity.Applicant;
 import com.talentstream.entity.ApplicantJobInterviewDTO;
+import com.talentstream.entity.ApplicantStatusHistory;
 import com.talentstream.entity.AppliedApplicantInfoDTO;
 import com.talentstream.entity.ApplyJob;
 import com.talentstream.entity.Job;
 import com.talentstream.entity.ScheduleInterview;
 import com.talentstream.service.ApplyJobService;
 import com.talentstream.service.ScheduleInterviewService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.RegisterRepository;
 @RestController       
 @RequestMapping("/applyjob")
 public class ApplyJobController {
@@ -35,6 +44,10 @@ public class ApplyJobController {
 	    private ApplyJobService applyJobService;
 	 @Autowired
 	    private ScheduleInterviewService scheduleInterviewService;
+	 
+	 @Autowired
+	 private RegisterRepository applicantRepository;
+	 
 	 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
 	 
 	 @PostMapping("/applicants/applyjob/{applicantId}/{jobId}")
@@ -64,62 +77,51 @@ public class ApplyJobController {
 	        }
 	    }
 	    
- @GetMapping("/getAppliedJobs/{applicantId}")
- public ResponseEntity<List<JobDTO>> getAppliedJobsForApplicant(@PathVariable long applicantId) {
+	 @GetMapping("/getAppliedJobs/{applicantId}")
+	 public ResponseEntity<List<JobDTO>> getAppliedJobsForApplicant(@PathVariable long applicantId) {
+	  
+	 	 try {
+	 	        List<JobDTO> appliedJobsDTO = applyJobService.getAppliedJobsForApplicant(applicantId);
+	  
+	 	        if (appliedJobsDTO.isEmpty()) {
+	 	            return ResponseEntity.noContent().build();
+	 	        }
+	  
+	 	        return ResponseEntity.ok(appliedJobsDTO);
+	 	    } catch (CustomException e) {
+	 	        return ResponseEntity.status(e.getStatus()).body(new ArrayList<>());
+	 	    } catch (Exception e) {
+	 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+	 	    }
+	  
+	 }
+ 
+ 
+ @GetMapping("/countAppliedJobs/{applicantId}")
+ public ResponseEntity<?> countAppliedJobsForApplicant(@PathVariable long applicantId) {
      try {
-         List<Job> appliedJobs = applyJobService.getAppliedJobsForApplicant(applicantId);
-
-         if (appliedJobs.isEmpty()) {
-             return ResponseEntity.noContent().build();
-         }
-
-         List<JobDTO> appliedJobsDTO = appliedJobs.stream()
-        		 .map(job -> {
-        	            JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
-        	            jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
-        	            jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
-        	            jobDTO.setEmail(job.getJobRecruiter().getEmail());
-        	            return jobDTO;
-        	        })
-        	        .collect(Collectors.toList());
-
-         return ResponseEntity.ok(appliedJobsDTO);
+         long count = applyJobService.countAppliedJobsForApplicant(applicantId);
+         return ResponseEntity.ok(count);
      } catch (CustomException e) {
-         return ResponseEntity.status(e.getStatus()).body(new ArrayList<>());
+         return ResponseEntity.status(e.getStatus()).body(e.getMessage());
      } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
      }
  }
+ 
+ 
  @GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants")
- public ResponseEntity<List<AppliedApplicantInfoDTO>> getAppliedApplicantsForRecruiter(@PathVariable long jobRecruiterId) {
-	 try {
-	        List<AppliedApplicantInfoDTO> appliedApplicants = applyJobService.getAppliedApplicants(jobRecruiterId);
-	        return ResponseEntity.ok(appliedApplicants);
-	    } catch (CustomException e) {
-	        return ResponseEntity.status(e.getStatus()).body(new ArrayList<>());
-	    } catch (Exception e) {
-	       
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
-	    }
-  
+ public ResponseEntity<Map<String, List<AppliedApplicantInfoDTO>>> getAppliedApplicantsForRecruiter(@PathVariable long jobRecruiterId) {
+      try {
+          Map<String, List<AppliedApplicantInfoDTO>> appliedApplicantsMap = applyJobService.getAppliedApplicants(jobRecruiterId);
+          return ResponseEntity.ok(appliedApplicantsMap);
+      } catch (CustomException e) {
+          return ResponseEntity.status(e.getStatus()).body(new HashMap<>());
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
+      }
  }
- 
- 
- 
- @GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/status/{status}")
- public ResponseEntity<List<AppliedApplicantInfoDTO>> getAppliedApplicantsByStatus(
-         @PathVariable long jobRecruiterId,
-         @PathVariable String status) {
-     try {
-         List<AppliedApplicantInfoDTO> applicantsByStatus = applyJobService.getAppliedApplicantsByStatus(jobRecruiterId, status);
-         return ResponseEntity.ok(applicantsByStatus);
-     } catch (CustomException e) {
-         return ResponseEntity.status(e.getStatus()).body(new ArrayList<>());
-     } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
-     }
- }
- @PostMapping("/recruiters/scheduleInterview/{applyJobId}")
+ @PostMapping("/scheduleInterview/{applyJobId}")
  public ResponseEntity<Void> createScheduleInterview(
          @PathVariable Long applyJobId,
          @RequestBody ScheduleInterviewDTO scheduleInterviewDTO) {
@@ -134,7 +136,7 @@ public class ApplyJobController {
  }
    
    
-   @PutMapping("/recruiters/applyjob-update-status/{applyJobId}/{newStatus}")
+ @PutMapping("/recruiters/applyjob-update-status/{applyJobId}/{newStatus}")
    public ResponseEntity<String> updateApplicantStatus(
            @PathVariable Long applyJobId,
            @PathVariable String newStatus) {
@@ -242,6 +244,61 @@ public class ApplyJobController {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
        }
    }
- }
+   
+   @GetMapping("/recruiters/applyjob-status-history/{applyJobId}")
+	public ResponseEntity<List<ApplicantStatusHistory>> getApplicantStatusHistory(@PathVariable long applyJobId){
+		try {
+			List<ApplicantStatusHistory> statusHistory=applyJobService.getApplicantStatusHistory(applyJobId);
+			return ResponseEntity.ok(statusHistory);
+		} catch (EntityNotFoundException e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	@GetMapping("/applicant/job-alerts/{applicantId}")
+	public ResponseEntity<List<Alerts>> getAlerts(@PathVariable long applicantId){
+		try {
+			List<Alerts> notifications=applyJobService.getAlerts(applicantId);
+			// Reset alertCount to zero when fetching alerts
+	        applyJobService.resetAlertCount(applicantId);
+			return ResponseEntity.ok(notifications);
+		} catch (EntityNotFoundException e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	@GetMapping("/applicants/{applicantId}/unread-alert-count")
+	public ResponseEntity<Integer> getUnreadAlertCount(@PathVariable long applicantId) {
+	    try {
+	        Applicant applicant = applicantRepository.findById(applicantId);
+	        if (applicant != null) {
+	            int unreadAlertCount = applicant.getAlertCount();
+	            return ResponseEntity.ok(unreadAlertCount);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
+	}
+	@GetMapping("/recruiters/countShortlistedAndInterviewed/{recruiterId}")
+	   public ResponseEntity<Long> countShortlistedAndInterviewedApplicants(@PathVariable Long recruiterId) {
+		   try {
+		        long count = applyJobService.countShortlistedAndInterviewedApplicants(recruiterId);
+		        return ResponseEntity.ok(count);
+		    } catch (CustomException e) {
+		        return ResponseEntity.status(e.getStatus()).body(0L);
+		    } catch (Exception e) {
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0L);
+		    }
+	   }
+}
+ 
 
 

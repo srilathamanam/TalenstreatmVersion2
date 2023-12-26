@@ -53,5 +53,6 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 	
 	@Query("SELECT DISTINCT j FROM Job j JOIN j.skillsRequired s WHERE s.skillName = :skillName")
     Page<Job> findJobsBySkillName(String skillName, Pageable pageable);
+
 	
 }

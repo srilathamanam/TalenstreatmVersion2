@@ -17,18 +17,18 @@ import com.talentstream.repository.RegisterRepository;
 
 @Service
 public class JobRecruiterService {
-	 
+	
 	    private PasswordEncoder passwordEncoder;	    
 	   @Autowired
         JobRecruiterRepository recruiterRepository;
 	   @Autowired
 	   RegisterRepository applicantRepository;
-
+ 
 	   public JobRecruiterService(JobRecruiterRepository recruiterRepository, PasswordEncoder passwordEncoder) {
 	        this.recruiterRepository = recruiterRepository;
 	        this.passwordEncoder = passwordEncoder;
 	    }
-
+ 
 	    public ResponseEntity<String> saveRecruiter(JobRecruiter recruiter) {
 	    	try {
 	           
@@ -37,7 +37,7 @@ public class JobRecruiterService {
 	            }
 	            if(recruiterRepository.existsByMobilenumber(recruiter.getMobilenumber())||applicantRepository.existsByMobilenumber(recruiter.getMobilenumber()))
 	            {
-	            	throw new CustomException("Mobile number already existed",null);
+	            	throw new CustomException("Mobile number already existed ,enter new mobile number",null);
 	            }
 	            recruiter.setPassword(passwordEncoder.encode(recruiter.getPassword()));
 	            recruiterRepository.save(recruiter);
@@ -50,9 +50,9 @@ public class JobRecruiterService {
 	    }
     public JobRecruiter login(String email, String password) {
     	 JobRecruiter recruiter = recruiterRepository.findByEmail(email);
-
+ 
          if (recruiter != null && passwordEncoder.matches(password, recruiter.getPassword())) {
-             return recruiter; 
+             return recruiter;
          } else {
              throw new CustomException("Login failed", HttpStatus.UNAUTHORIZED);
          }
@@ -82,11 +82,11 @@ public class JobRecruiterService {
             throw new EntityNotFoundException("JobRecruiter not found for email: " + userEmail);
         }
     }
-
+ 
 	public JobRecruiter findByEmail(String userEmail) {
 			return recruiterRepository.findByEmail(userEmail);
 	}
-
+ 
 	public void addRecruiter(JobRecruiter jobRecruiter) {
 		recruiterRepository.save(jobRecruiter);
 			}
@@ -100,11 +100,45 @@ public class JobRecruiterService {
         recruiterDTO.setEmail(recruiter.getEmail());
         recruiterDTO.setPassword(recruiter.getPassword());
         recruiterDTO.setRoles(recruiter.getRoles());
-
+ 
         return recruiterDTO;
     }
+	
+	public String authenticateRecruiter(Long id,String oldPassword, String newPassword) {
+	       //BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+
+	        try {
+	        	JobRecruiter opUser = recruiterRepository.findByRecruiterId(id);
+	            System.out.println(opUser.getPassword());
+	            System.out.println(passwordEncoder.encode(oldPassword));
+	            if (opUser != null) {
+	            	if(passwordEncoder.matches(oldPassword, opUser.getPassword())) {
+	            		opUser.setPassword(passwordEncoder.encode(newPassword));
+	            		recruiterRepository.save(opUser);
+
+	                    return "Password updated and stored";
+	            	}
+	            	else {
+	            		return "Your old password not matching with data base password";
+	            	}
+	            	 	
+	            		 
+	            
+	            }
+	            else {
+	            	return "User not found with given id";
+	            }
+	        }
+	               
+	    	catch (Exception e) {
+	         
+	            e.printStackTrace();
+	            
+	           return "user not found with this given id";
+	        }
 	}
-    
+	
+	}
 
  
 

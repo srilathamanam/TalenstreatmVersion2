@@ -19,30 +19,31 @@ public class ApplicantResume {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="applicantid", referencedColumnName = "id")
     private Applicant applicant;
-
+ 
 	public long getId() {
 		return id;
 	}
-
+ 
 	public void setId(long id) {
 		this.id = id;
 	}
-
+ 
 	public String getPdfname() {
 		return pdfname;
 	}
-
+ 
 	public void setPdfname(String pdfname) {
 		this.pdfname = pdfname;
 	}
-
+ 
 	public Applicant getApplicant() {
 		return applicant;
 	}
-
+ 
 	public void setApplicant(Applicant applicant) {
 		this.applicant = applicant;
 	}
     
     
 }
+ 

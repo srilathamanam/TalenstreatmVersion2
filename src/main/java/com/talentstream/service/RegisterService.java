@@ -1,5 +1,5 @@
 package com.talentstream.service;
-
+ 
 import java.util.List;
 import com.talentstream.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.dto.RegistrationDTO;
 import jakarta.persistence.EntityNotFoundException;
-
+ 
 @Service
 public class RegisterService {
 	
@@ -21,23 +21,31 @@ public class RegisterService {
 	
 	@Autowired
     private JobRecruiterRepository recruiterRepository;
-
+ 
 	 @Autowired
 	RegisterRepository applicantRepository;
     public RegisterService( RegisterRepository applicantRepository) {
 	        this.applicantRepository = applicantRepository;
 	    }
-
+ 
  
 public Applicant login(String email, String password) {
+	System.out.println("Login is Mached "+email);
+	try {
 	Applicant applicant = applicantRepository.findByEmail(email);
-    if (applicant != null && passwordEncoder.matches(password, applicant.getPassword())) {
-        return applicant;
-    } else {
-        return null;
-    }
+	 if (applicant != null && passwordEncoder.matches(password, applicant.getPassword())) {
+	        return applicant;
+	    } else {
+	        return null;
+	    }
+	}
+	catch(Exception e)
+	{
+	System.out.println(e.getMessage());
+	return null;
+	} 
 }
-
+ 
 public Applicant findById(Long id) {
 	try {
         return applicantRepository.findById(id);
@@ -47,16 +55,16 @@ public Applicant findById(Long id) {
         throw new CustomException("Error finding applicant by ID", HttpStatus.INTERNAL_SERVER_ERROR);
     }
    }
-
+ 
 public List<Applicant> getAllApplicants() {
 	 try {
          return applicantRepository.findAll();
      } catch (Exception e) {
          throw new CustomException("Error retrieving applicants", HttpStatus.INTERNAL_SERVER_ERROR);
      }
-
+ 
 }
-
+ 
 public void updatePassword(String userEmail, String newPassword) {
 	try {
         Applicant applicant = applicantRepository.findByEmail(userEmail);
@@ -71,9 +79,9 @@ public void updatePassword(String userEmail, String newPassword) {
     } catch (Exception e) {
         throw new CustomException("Error updating password", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+ 
 }
-
+ 
 	public Applicant findByEmail(String userEmail) {
 		try {
 			System.out.println(userEmail);
@@ -83,11 +91,11 @@ public void updatePassword(String userEmail, String newPassword) {
         	
             throw new CustomException("Error finding applicant by email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+ 
 	}
-
+ 
 	
-
+ 
  
 	public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
 		try {
@@ -110,8 +118,8 @@ public void updatePassword(String userEmail, String newPassword) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
         }
 	}
-
-
+ 
+ 
 	public void addApplicant(Applicant applicant) {
 		 try {
 	            applicantRepository.save(applicant);
@@ -129,6 +137,40 @@ public void updatePassword(String userEmail, String newPassword) {
         applicant.setPassword(registrationDTO.getPassword());       
         return applicant;
     }
+	
+	public String authenticateUser(Long id,String oldPassword, String newPassword) {
+	       //BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+
+	        try {
+	            Applicant opUser = applicantRepository.findById(id);
+	            System.out.println(opUser.getPassword());
+	            System.out.println(passwordEncoder.encode(oldPassword));
+	            if (opUser != null) {
+	            	if(passwordEncoder.matches(oldPassword, opUser.getPassword())) {
+	            		opUser.setPassword(passwordEncoder.encode(newPassword));
+	                    applicantRepository.save(opUser);
+
+	                    return "Password updated and stored";
+	            	}
+	            	else {
+	            		return "Your old password not matching with data base password";
+	            	}
+	            	 	
+	            		 
+	            
+	            }
+	            else {
+	            	return "User not found with given id";
+	            }
+	        }
+	               
+	    	catch (Exception e) {
+	         
+	            e.printStackTrace();
+	            
+	           return "user not found with this given id";
+	        }
+			
+	    }
+	
 	}
-
-

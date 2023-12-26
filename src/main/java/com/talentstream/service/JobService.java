@@ -94,6 +94,7 @@ public class JobService {
     }
     public List<Job> getJobsByRecruiter(Long jobRecruiterId) {
     	try {
+    		System.out.println("before find job recruiter");
             return jobRepository.findByJobRecruiterId(jobRecruiterId);
         } catch (Exception e) {
             throw new CustomException("Error while retrieving jobs by recruiter ID", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -123,7 +124,8 @@ public class JobService {
         job.setSkillsRequired(convertSkillsDTOToEntity(jobDTO.getSkillsRequired()));
         job.setJobHighlights(jobDTO.getJobHighlights());
         job.setDescription(jobDTO.getDescription());
-       
+        job.setCreationDate(jobDTO.getCreationDate());
+        
       //  job.setUploadDocument(Base64.getDecoder().decode(jobDTO.getUploadDocument())); // Decode base64 string
 
         return job;

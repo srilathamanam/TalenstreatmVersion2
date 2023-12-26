@@ -1,5 +1,6 @@
 package com.talentstream.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -22,8 +23,8 @@ public class ApplicantStatusHistory {
 	private ApplyJob applyJob;
 	
 	private String status;
-	@Column(columnDefinition = "DATETIME")
-	private LocalDateTime changeDate;
+	@Column(columnDefinition = "DATE")
+	private LocalDate changeDate;
 	public long getId() {
 		return id;
 	}
@@ -42,10 +43,10 @@ public class ApplicantStatusHistory {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public LocalDateTime getChangeDate() {
+	public LocalDate getChangeDate() {
 		return changeDate;
 	}
-	public void setChangeDate(LocalDateTime changeDate) {
+	public void setChangeDate(LocalDate changeDate) {
 		this.changeDate = changeDate;
 	}
 	

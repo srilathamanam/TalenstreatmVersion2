@@ -28,7 +28,7 @@ public class CompanyProfileController {
 	    public ResponseEntity<String> createCompanyProfile(@RequestBody CompanyProfileDTO companyProfileDTO,@PathVariable Long jobRecruiterId) {
 	       	try {
 	           companyProfileService.saveCompanyProfile(companyProfileDTO,jobRecruiterId);
-	           return ResponseEntity.status(HttpStatus.OK).body("CompanyProfile saved successfully.");
+	           return ResponseEntity.status(HttpStatus.OK).body("CompanyProfile saved successfully");
 	        } catch (CustomException ce) {
 	            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
 	        } catch (Exception e) {

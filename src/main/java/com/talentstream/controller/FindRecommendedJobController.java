@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+ 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+ 
 import com.talentstream.dto.JobDTO;
 import com.talentstream.dto.RecuriterSkillsDTO;
 import com.talentstream.entity.Job;
@@ -30,20 +30,20 @@ public class FindRecommendedJobController {
     public FindRecommendedJobController(FinRecommendedJobService finJobService) {
         this.finJobService = finJobService;
     }
-
+ 
     @GetMapping("/findrecommendedjob/{applicantId}")
     public  ResponseEntity<List<JobDTO>> recommendJobsForApplicant(@PathVariable String applicantId) {
     	try {
             long applicantIdLong = Long.parseLong(applicantId);
             List<Job> recommendedJobs = finJobService.findJobsMatchingApplicantSkills(applicantIdLong);
-
+ 
             if (recommendedJobs.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
             } else {
             	 List<JobDTO> jobDTOs = recommendedJobs.stream()
                          .map(job -> convertEntityToDTO(job))
                          .collect(Collectors.toList());
-
+ 
                 return ResponseEntity.ok(jobDTOs);
             }
         } catch (NumberFormatException ex) {
@@ -71,6 +71,10 @@ public class FindRecommendedJobController {
         jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
         jobDTO.setEmail(job.getJobRecruiter().getEmail());
         jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
+        jobDTO.setSpecialization(job.getSpecialization());
+        jobDTO.setJobHighlights(job.getJobHighlights());
+        jobDTO.setDescription(job.getDescription());
+        jobDTO.setCreationDate(job.getCreationDate());
         
         Set<RecuriterSkillsDTO> skillsDTOList = job.getSkillsRequired().stream()
                 .map(this::convertSkillsEntityToDTO)
@@ -83,6 +87,11 @@ public class FindRecommendedJobController {
         skillDTO.setSkillName(skill.getSkillName());
         skillDTO.setMinimumExperience(skill.getMinimumExperience());
         return skillDTO;
+    }
+    
+    @GetMapping("/countRecommendedJobsForApplicant/{applicantId}")
+    public long countRecommendedJobsForApplicant(@PathVariable long applicantId) {
+        return finJobService.countRecommendedJobsForApplicant(applicantId);
     }
 }
 

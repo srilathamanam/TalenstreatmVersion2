@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +22,9 @@ public class ApplicantResumeController {
 	@Autowired
     private ApplicantResumeService applicantResumeService;
 	
-
-    @PostMapping("/{applicantId}/upload")
-    public String fileUpload(@PathVariable Long applicantId,@RequestParam("resume") MultipartFile resume) 
+ 
+	@PostMapping("/{applicantId}/upload")
+	public String fileUpload(@PathVariable Long applicantId, @RequestParam("resume") MultipartFile resume)
     {
     	try {
             String filename = this.applicantResumeService.UploadPdf(applicantId, resume);
@@ -43,10 +40,12 @@ public class ApplicantResumeController {
             return "Resume not uploaded successfully";
         }
     }
-    
-    @GetMapping("/getresume/{applicantId}")
+	
+	@GetMapping("/getresume/{applicantId}")
     public ResponseEntity<Resource> getResume(@PathVariable long applicantId) throws IOException {
         return applicantResumeService.getResumeByApplicantId(applicantId);
     }
+ 
+ 
     
 }

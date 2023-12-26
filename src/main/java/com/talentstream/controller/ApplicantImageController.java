@@ -1,14 +1,8 @@
 package com.talentstream.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.talentstream.exception.CustomException;
 import com.talentstream.exception.UnsupportedFileTypeException;
 import com.talentstream.service.ApplicantImageService;
-
-
+ 
+ 
 @RestController
 @RequestMapping("/applicant-image")
 public class ApplicantImageController {
@@ -31,7 +25,7 @@ public class ApplicantImageController {
     private ApplicantImageService applicantImageService;
 		
     @PostMapping("/{applicantId}/upload")
-    public String fileUpload(@PathVariable Long applicantId,@RequestParam("photo")MultipartFile photo) 
+    public String fileUpload(@PathVariable Long applicantId,@RequestParam("photo")MultipartFile photo)
     {
     	 try {
     	        String filename = this.applicantImageService.uploadImage(applicantId, photo);

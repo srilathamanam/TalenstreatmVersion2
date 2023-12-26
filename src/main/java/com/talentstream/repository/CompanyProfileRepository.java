@@ -18,7 +18,6 @@ public interface CompanyProfileRepository extends JpaRepository<CompanyProfile, 
 	
 	List<CompanyProfile> findByJobRecruiter(JobRecruiter jobRecruiter);
 	CompanyProfile save(CompanyProfileDTO companyProfileDTO);
-	   @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CompanyProfile c WHERE c.jobRecruiter.recruiterId = :recruiterId")
-	    boolean existsByJobRecruiterId(@Param("recruiterId") Long recruiterId);
-	}
-
+	@Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CompanyProfile c WHERE c.jobRecruiter.recruiterId = :recruiterId")
+    boolean existsByJobRecruiterId(@Param("recruiterId") Long recruiterId);
+}

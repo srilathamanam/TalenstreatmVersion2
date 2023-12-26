@@ -2,6 +2,7 @@ package com.talentstream.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,31 @@ public class FinRecommendedJobService {
             return matchingJobs;
         } catch (Exception e) {           
             throw new CustomException("Error while finding recommended jobs", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public long countRecommendedJobsForApplicant(long applicantId) {
+        try {
+        	Optional<ApplicantProfile> optionalApplicant = applicantRepository.findByApplicantIdWithSkills(applicantId);
+
+            if (optionalApplicant.isEmpty()) {
+                // Return a specific indicator, for example, -1 to signify that the applicant is not found
+                return -1;
+            }
+
+            ApplicantProfile applicant = optionalApplicant.get();
+
+            Set<String> lowercaseApplicantSkillNames = applicant.getSkillsRequired().stream()
+                    .map(skill -> skill.getSkillName().toLowerCase())
+                    .collect(Collectors.toSet());
+
+            List<Job> recommendedJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
+
+            return recommendedJobs.size();
+        } catch (Exception e) {
+        	 e.printStackTrace(); 
+            // Handle exceptions as needed
+            throw new CustomException("Error while counting recommended jobs for the applicant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

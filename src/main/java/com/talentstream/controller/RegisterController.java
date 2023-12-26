@@ -22,6 +22,7 @@ import com.talentstream.entity.AuthenticationResponse;
 import com.talentstream.entity.Login;
 import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
+import com.talentstream.entity.PasswordRequest;
 import com.talentstream.exception.CustomException;
 import com.talentstream.response.ResponseHandler;
 import com.talentstream.service.EmailService;
@@ -223,4 +224,11 @@ public class RegisterController {
 			otpService=otpService2;
 			
 		}
+		@PostMapping("/authenticateUsers/{id}")
+	    public String authenticateUser(@PathVariable Long id, @RequestBody PasswordRequest passwordRequest) {
+	        String newpassword = passwordRequest.getNewpassword();
+	        String oldpassword = passwordRequest.getOldpassword();
+	        return regsiterService.authenticateUser(id, oldpassword, newpassword);
+	    }
+		
 }
