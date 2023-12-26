@@ -56,7 +56,7 @@ public class FinRecommendedJobService {
 
             if (optionalApplicant.isEmpty()) {
                 // Return a specific indicator, for example, -1 to signify that the applicant is not found
-                return -1;
+                return 0;
             }
 
             ApplicantProfile applicant = optionalApplicant.get();
