@@ -59,37 +59,7 @@ public class ApplyJobService {
 	    
 	    @Autowired
 	    private AlertsRepository alertsRepository;
-//public String ApplicantApplyJob(long  applicantId, long jobId) {
-//	    	
-//	    	try {
-//	            Applicant applicant = applicantRepository.findById(applicantId);
-//	            Job job = jobRepository.findById(jobId).orElse(null);
-// 
-//	            if (applicant == null || job == null) {
-//	                throw new CustomException("Applicant ID or Job ID not found", HttpStatus.NOT_FOUND);
-//	            }
-// 
-//	            if (applyJobRepository.existsByApplicantAndJob(applicant, job)) {
-//	                throw new CustomException("Job has already been applied by the applicant", HttpStatus.BAD_REQUEST);
-//	            }
-// 
-//	            ApplyJob applyJob = new ApplyJob();
-//	            applyJob.setApplicant(applicant);
-//	            applyJob.setJob(job);
-//	            applyJobRepository.save(applyJob);
-//	            
-//	         // Update job application status to "Already Applied"
-//				job.setJobStatus("Already Applied");
-//				jobRepository.save(job);
-// 
-//	            return "Job Applied Successfully";
-//	        } catch (CustomException ex) {
-//	            throw ex;
-//	        } catch (Exception e) {
-//	            throw new CustomException("An error occurred while applying for the job", HttpStatus.INTERNAL_SERVER_ERROR);
-//	        }
-//	    }
-	    
+
 public String ApplicantApplyJob(long  applicantId, long jobId) {
 	    	
 	    	try {
@@ -124,8 +94,9 @@ public String ApplicantApplyJob(long  applicantId, long jobId) {
 	    	            		String companyName=recruiter.getCompanyname();
 	    	            		if(companyName!=null) {
 	    	            			String cN=recruiter.getCompanyname();
-	    	            			//SendAlerts
-	    	            			sendAlerts(applyJob,applyJob.getApplicantStatus(),cN);
+	    	            			   
+	    	            			String jobTitle = jobs.getJobTitle();
+	    	            			sendAlerts(applyJob,applyJob.getApplicantStatus(),cN,jobTitle);
 	    	            			return "Job applied successfully";
 	    	            		}
 	    	            	}
@@ -168,13 +139,15 @@ public long countAppliedJobsForApplicant(long applicantId) {
 		}
  
 	    //This method is to display alerts whenever we click on Alerts
-		private void sendAlerts(ApplyJob applyJob, String applicantStatus, String cN) {
+	    private
+	    void sendAlerts(ApplyJob applyJob, String applicantStatus, String cN, String jobTitle) {
 			// TODO Auto-generated method stub
 	    	Alerts alerts=new Alerts();
 			alerts.setApplyJob(applyJob);
 			alerts.setApplicant(applyJob.getApplicant());
 			alerts.setCompanyName(cN);
-			alerts.setStatus(applicantStatus);
+			alerts.setStatus(applicantStatus);			
+			alerts.setJobTitle(jobTitle);
 			alerts.setChangeDate(LocalDate.now());
 			alertsRepository.save(alerts);
 			// Send email to the applicant
@@ -329,15 +302,6 @@ private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantIn
 	    return dto;
 }
  
-//public String updateApplicantStatus(Long applyJobId, String newStatus) {
-//    ApplyJob applyJob = applyJobRepository.findById(applyJobId)
-//            .orElseThrow(() -> new EntityNotFoundException("ApplyJob not found"));
-// 
-//    applyJob.setApplicantStatus(newStatus);
-//    applyJobRepository.save(applyJob);
-// 
-//    return "Applicant status updated to: " + newStatus;
-//}
  
 public String updateApplicantStatus(Long applyJobId, String newStatus) {
     ApplyJob applyJob = applyJobRepository.findById(applyJobId)
@@ -347,6 +311,8 @@ public String updateApplicantStatus(Long applyJobId, String newStatus) {
     	JobRecruiter recruiter=job.getJobRecruiter();
     	if(recruiter!=null) {
     		String companyName=recruiter.getCompanyname();
+    		  
+    		String jobTitle = job.getJobTitle();
     		if(companyName!=null) {
     			applyJob.setApplicantStatus(newStatus);
     		    applyJobRepository.save(applyJob);
@@ -355,7 +321,8 @@ public String updateApplicantStatus(Long applyJobId, String newStatus) {
     			// Save status history
     		    saveStatusHistory(applyJob, applyJob.getApplicantStatus());
     		    //Send alerts
-    		    sendAlerts(applyJob,applyJob.getApplicantStatus(),companyName);
+    		    
+    		    sendAlerts(applyJob,applyJob.getApplicantStatus(),companyName,jobTitle);
     		    return "Applicant status updated to: " + newStatus;
     		}
     	}
@@ -433,6 +400,19 @@ public long countShortlistedAndInterviewedApplicants(long recruiterId) {
         return applyJobRepository.countShortlistedAndInterviewedApplicants(recruiterId, desiredStatusList);
     } catch (Exception e) {
         throw new CustomException("Failed to count shortlisted and interviewed applicants", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+public ApplyJob getByJobAndApplicant(Long jobId, Long applicantId) {
+    try {
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("Job not found"));
+        Applicant applicant = applicantRepository.findById(applicantId);
+
+        return applyJobRepository.findByJobAndApplicant(job, applicant);
+    } catch (EntityNotFoundException e) {
+        throw new CustomException("Job or Applicant not found", HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+        throw new CustomException("Error while retrieving ApplyJob", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 }

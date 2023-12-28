@@ -27,7 +27,7 @@ public class Alerts {
 	@ManyToOne
 	@JoinColumn(name = "applicant_id")
 	private Applicant applicant;
-	
+	private String jobTitle;
 	@ManyToOne
 	@JoinColumn(name = "applyjobid")
 	private ApplyJob applyJob;
@@ -67,6 +67,12 @@ public class Alerts {
 	}
 	public void setApplicant(Applicant applicant) {
 		this.applicant = applicant;
+	}
+	public String getJobTitle() {
+		return jobTitle;
+	}
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
 	}
 	
 	

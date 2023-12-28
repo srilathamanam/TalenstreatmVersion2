@@ -36,7 +36,19 @@ public class CompanyProfileController {
 	        }
 	    }
 	 
-	 
+	    @PutMapping("/{jobRecruiterId}/update-approval-status")
+	    public ResponseEntity<String> updateApprovalStatus(
+	            @PathVariable Long jobRecruiterId,
+	            @RequestParam String newStatus) {
+	        try {
+	            String message = companyProfileService.updateApprovalStatus(jobRecruiterId, newStatus);
+	            return ResponseEntity.status(HttpStatus.OK).body(message);
+	        } catch (CustomException ce) {
+	            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+	        }
+	    }
 	    @GetMapping("/recruiters/getCompanyProfile/{id}")
 	    public ResponseEntity<CompanyProfileDTO> getCompanyProfileById(@PathVariable Long id) {
 	    	try {
@@ -49,6 +61,19 @@ public class CompanyProfileController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	        }
 	    }
+	    
+	    @GetMapping("/companyprofile/approval-status/{jobRecruiterId}")
+	    public ResponseEntity<String> checkApprovalStatus(@PathVariable Long jobRecruiterId) {
+	        try {
+	            String approvalStatus = companyProfileService.checkApprovalStatus(jobRecruiterId);
+	            return ResponseEntity.status(HttpStatus.OK).body(approvalStatus);
+	        } catch (CustomException ce) {
+	            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
+	        }
+	    }
+
 
     
 }

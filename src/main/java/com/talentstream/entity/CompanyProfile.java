@@ -16,21 +16,30 @@ public class CompanyProfile {
     private String phoneNumber;
     private String email;
     private String headOffice; 
- 
-  
-@OneToOne//(mappedBy = "companyProfile", cascade = CascadeType.ALL)
+      
+    @OneToOne
     @JoinColumn(name = "jobRecruiter_id")
     private JobRecruiter jobRecruiter;
  
       
-  @ElementCollection
-  @CollectionTable(
+    @ElementCollection
+    @CollectionTable(
       name = "social_profiles",
       joinColumns = @JoinColumn(name = "company_profile_id")
-  )
-  private List<String> socialProfiles;
- 
-  public List<String> getSocialProfiles() {
+    		)
+    private List<String> socialProfiles; 
+    
+    @Column(nullable = false)
+    private String approvalStatus;
+    
+  public String getApprovalStatus() {
+		return approvalStatus;
+	}
+  public void setApprovalStatus(String approvalStatus) {
+		this.approvalStatus = approvalStatus;
+		
+	}
+public List<String> getSocialProfiles() {
       return socialProfiles;
   }
  
@@ -95,6 +104,8 @@ public class CompanyProfile {
 	public void setJobRecruiter(JobRecruiter jobRecruiter) {
 		this.jobRecruiter = jobRecruiter;
 	}
+
+	
 	
  
 }

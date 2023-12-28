@@ -59,4 +59,6 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
             "AND aj.applicant_status IN :statusList", nativeQuery = true)
 long countShortlistedAndInterviewedApplicants(@Param("recruiterId") Long recruiterId,
                                            @Param("statusList") List<String> statusList);
+
+	ApplyJob findByJobAndApplicant(Job job, Applicant applicant);
 }

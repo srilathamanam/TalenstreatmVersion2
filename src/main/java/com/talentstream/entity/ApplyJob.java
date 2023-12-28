@@ -142,8 +142,7 @@ public class ApplyJob {
     @OneToMany(mappedBy = "applyJob", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ScheduleInterview> scheduleInterviews;
- 
- 
+  
 	public List<ScheduleInterview> getScheduleInterviews() {
 		return scheduleInterviews;
 	}

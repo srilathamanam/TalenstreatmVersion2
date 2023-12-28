@@ -13,18 +13,22 @@ import org.springframework.stereotype.Service;
 
 import com.talentstream.dto.JobDTO;
 import com.talentstream.dto.RecuriterSkillsDTO;
+import com.talentstream.entity.CompanyProfile;
 import com.talentstream.entity.Job;
 import com.talentstream.entity.JobRecruiter;
 import com.talentstream.entity.JobSearchCriteria;
 import com.talentstream.entity.JobSpecifications;
 import com.talentstream.entity.RecuriterSkills;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.CompanyProfileRepository;
 import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.JobRepository;
 import com.talentstream.repository.RecuriterSkillsRepository;
 
 @Service
 public class JobService {
+	
+	private final CompanyProfileRepository companyProfileRepository;
 	JobRepository jobRepository;	   
 	    private RecuriterSkillsRepository skillsRepository;
 	    
@@ -32,9 +36,10 @@ public class JobService {
 	    JobRecruiterRepository jobRecruiterRepository;
 	    
     @Autowired
-    public JobService(JobRepository jobRepository, RecuriterSkillsRepository skillsRepository) {
+    public JobService(JobRepository jobRepository, RecuriterSkillsRepository skillsRepository,CompanyProfileRepository companyProfileRepository) {
         this.jobRepository = jobRepository;
         this.skillsRepository = skillsRepository;
+        this.companyProfileRepository=companyProfileRepository;
     }
 
     public List<Job> searchJobs(JobSearchCriteria searchCriteria) {
@@ -75,6 +80,8 @@ public class JobService {
          } catch (Exception e) {
              throw new CustomException("Error while saving job", HttpStatus.INTERNAL_SERVER_ERROR);
          }
+    	
+
 }
 
     public Job getJobById(Long jobId) {
@@ -125,8 +132,7 @@ public class JobService {
         job.setJobHighlights(jobDTO.getJobHighlights());
         job.setDescription(jobDTO.getDescription());
         job.setCreationDate(jobDTO.getCreationDate());
-        
-      //  job.setUploadDocument(Base64.getDecoder().decode(jobDTO.getUploadDocument())); // Decode base64 string
+              //  job.setUploadDocument(Base64.getDecoder().decode(jobDTO.getUploadDocument())); // Decode base64 string
 
         return job;
     }
