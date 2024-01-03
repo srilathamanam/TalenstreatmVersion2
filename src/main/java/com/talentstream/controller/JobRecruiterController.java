@@ -22,6 +22,8 @@ import com.talentstream.entity.PasswordRequest;
 import com.talentstream.entity.RecruiterLogin;
 import com.talentstream.entity.ResetPasswordRequest;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.JobRecruiterRepository;
+import com.talentstream.repository.RegisterRepository;
 import com.talentstream.service.EmailService;
 import com.talentstream.service.JobRecruiterService;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ public class JobRecruiterController {
     private OtpService otpService;
 	 private Map<String, Boolean> otpVerificationMap = new HashMap<>();
 	 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
-
+ 
     @Autowired
     private EmailService emailService; // Your email service
 	@Autowired
@@ -45,6 +47,13 @@ public class JobRecruiterController {
 	private JwtUtil jwtTokenUtil;
      @Autowired
      MyUserDetailsService myUserDetailsService;
+     @Autowired
+	private JobRecruiterRepository recruiterRepository;
+ 
+	 @Autowired
+	RegisterRepository applicantRepository;
+ 
+ 
     @Autowired
     public JobRecruiterController(JobRecruiterService recruiterService) {
         this.recruiterService = recruiterService;
@@ -52,7 +61,6 @@ public class JobRecruiterController {
     @PostMapping("/saverecruiters")
     public ResponseEntity<String> registerRecruiter(@RequestBody JobRecruiterDTO recruiterDTO) {
         JobRecruiter recruiter = convertToEntity(recruiterDTO);
-             
         try {
 	             return recruiterService.saveRecruiter(recruiter);
 	        } catch (CustomException e) {
@@ -61,24 +69,39 @@ public class JobRecruiterController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
 	        }
     }
-
-
+ 
+ 
     @PostMapping("/recruiterLogin")
     public ResponseEntity<Object> login(@RequestBody RecruiterLogin loginRequest) throws Exception {
        JobRecruiter recruiter = recruiterService.login(loginRequest.getEmail(), loginRequest.getPassword());
         System.out.println(loginRequest.getEmail());
         System.out.println(recruiter.getEmail());
-
+ 
         if (recruiter!=null) {
         	return createAuthenticationToken(loginRequest,recruiter);
         } else {
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
         }
     }
-
+ 
     @PostMapping("/registration-send-otp")
     public ResponseEntity<String> sendOtp(@RequestBody ResetPasswordRequest request) {
         String userEmail = request.getEmail();
+        if (applicantRepository.existsByEmail(request.getEmail())) {
+           return ResponseEntity.ok("Email already registered as applicant");
+        }
+    	if(recruiterRepository.existsByEmail(request.getEmail())) {
+    		return ResponseEntity.ok("Email already registered recruiter");
+    	}
+    	if(applicantRepository.existsByMobilenumber(request.getMobilenumber()))
+        {
+		return ResponseEntity.ok("Mobile number already existed in applicant");
+        }
+	 if(recruiterRepository.existsByMobilenumber(request.getMobilenumber())) {
+		return ResponseEntity.ok("Mobile number already existed in recruiter");
+	 }
+ 
+	 
         JobRecruiter jobRecruiter = recruiterService.findByEmail(userEmail);
         if (jobRecruiter == null) {
             String otp = otpService.generateOtp(userEmail);
@@ -90,7 +113,7 @@ public class JobRecruiterController {
         	 return ResponseEntity.badRequest().body("Email is already  registered.");
         }
     }
-
+ 
     private ResponseEntity<Object> createAuthenticationToken(RecruiterLogin login, JobRecruiter recruiter) throws Exception {
 		    	try {
 			authenticationManager.authenticate(
@@ -104,7 +127,7 @@ public class JobRecruiterController {
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		return ResponseHandler.generateResponse("Login successfully"+userDetails.getAuthorities(), HttpStatus.OK, new AuthenticationResponse(jwt),recruiter.getEmail(),recruiter.getCompanyname(),recruiter.getRecruiterId());
 	}
-
+ 
     @GetMapping("/viewRecruiters")
     public ResponseEntity<List<JobRecruiterDTO>> getAllJobRecruiters() {
         try {
@@ -114,7 +137,6 @@ public class JobRecruiterController {
             return ResponseHandler.generateResponse1("Error retrieving job recruiters", HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
-	
 	private JobRecruiter convertToEntity(JobRecruiterDTO recruiterDTO) {
         JobRecruiter recruiter = new JobRecruiter();
         recruiter.setRecruiterId(recruiterDTO.getRecruiterId());
@@ -123,16 +145,15 @@ public class JobRecruiterController {
         recruiter.setEmail(recruiterDTO.getEmail());
         recruiter.setPassword(recruiterDTO.getPassword());
         recruiter.setRoles(recruiterDTO.getRoles());        
-
+ 
         return recruiter;
     }
-	
 
+ 
 @PostMapping("/authenticateRecruiter/{id}")
     public String authenticateRecruiter(@PathVariable Long id, @RequestBody PasswordRequest passwordRequest) {
         String newpassword = passwordRequest.getNewpassword();
         String oldpassword = passwordRequest.getOldpassword();
         return recruiterService.authenticateRecruiter(id, oldpassword, newpassword);
     }
-	
 }
