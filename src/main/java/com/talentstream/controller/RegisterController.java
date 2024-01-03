@@ -1,6 +1,6 @@
 package com.talentstream.controller;
 import java.util.HashMap;
-
+ 
 import java.util.List;
 import com.talentstream.dto.LoginDTO;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
+ 
 import com.talentstream.dto.RegistrationDTO;
 import com.talentstream.entity.Applicant;
 import com.talentstream.entity.AuthenticationResponse;
@@ -24,6 +24,8 @@ import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
 import com.talentstream.entity.PasswordRequest;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.JobRecruiterRepository;
+import com.talentstream.repository.RegisterRepository;
 import com.talentstream.response.ResponseHandler;
 import com.talentstream.service.EmailService;
 import com.talentstream.service.JwtUtil;
@@ -31,56 +33,56 @@ import com.talentstream.service.MyUserDetailsService;
 import com.talentstream.service.OtpService;
 import com.talentstream.service.RegisterService;
 import com.talentstream.service.JobRecruiterService;
-
+ 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/applicant")
 public class RegisterController {
 	@Autowired
     MyUserDetailsService myUserDetailsService;
-	
 	 @Autowired
 	    private OtpService otpService;
-	 
-	 
+	 @Autowired
+	private JobRecruiterRepository recruiterRepository;
+ 
+	 @Autowired
+	RegisterRepository applicantRepository;
+
 		 private Map<String, Boolean> otpVerificationMap = new HashMap<>();
 		 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
 		 @Autowired
 			private AuthenticationManager authenticationManager;
 		     @Autowired
 			private JwtUtil jwtTokenUtil;
-		    
 	    @Autowired
 	    private EmailService emailService;
-	    
 		@Autowired
 	     RegisterService regsiterService;
 		@Autowired
 		JobRecruiterService recruiterService;	 
 		@Autowired
 		private PasswordEncoder passwordEncoder;
-
+ 
 	    @Autowired
 	    public RegisterController(RegisterService regsiterService)
 	    {
 	        this.regsiterService = regsiterService;	     
-
+ 
 	    }
-
- 	    @PostMapping("/saveApplicant")
+ 
+	    @PostMapping("/saveApplicant")
 	    public ResponseEntity<String> register(@RequestBody RegistrationDTO registrationDTO) {
- 	    	try {
- 	            return regsiterService.saveapplicant(registrationDTO);
- 	        } catch (CustomException e) {
- 	            return ResponseEntity.badRequest().body(e.getMessage());
- 	        } catch (Exception e) {
- 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
- 	        }
+	    	try {
+	            return regsiterService.saveapplicant(registrationDTO);
+	        } catch (CustomException e) {
+	            return ResponseEntity.badRequest().body(e.getMessage());
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering applicant");
+	        }
 	    }
-
+ 
      	    @PostMapping("/applicantLogin")
 	    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
      	    	try {
@@ -96,7 +98,7 @@ public class RegisterController {
      	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
      	        }
 	    }
-
+ 
 	    private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
 	    	try {
 	            authenticationManager.authenticate(
@@ -108,13 +110,26 @@ public class RegisterController {
 	        } catch (BadCredentialsException e) {
 	            throw new CustomException("Incorrect username or password", HttpStatus.UNAUTHORIZED);
 	        }
-	           
 		}
-
-
+ 
+ 
 	    @PostMapping("/applicantsendotp")
 	    public ResponseEntity<String> sendOtp(@RequestBody Applicant  request) {
 	    	String userEmail = request.getEmail();
+	    	System.out.println(request.getMobilenumber());
+	    	if (applicantRepository.existsByEmail(request.getEmail())) {
+	            return ResponseEntity.ok("Email already registered as applicant");
+	         }
+	     	if(recruiterRepository.existsByEmail(request.getEmail())) {
+	     		return ResponseEntity.ok("Email already registered recruiter");
+	     	}
+	     	 if(applicantRepository.existsByMobilenumber(request.getMobilenumber()))
+	            {
+	     		return ResponseEntity.ok("Mobile number already existed in applicant");
+	            }
+	     	 if(recruiterRepository.existsByMobilenumber(request.getMobilenumber())) {
+	     		return ResponseEntity.ok("Mobile number already existed in recruiter");
+	     	 }
 	        try {
 	            Applicant applicant = regsiterService.findByEmail(userEmail);
 	            if (applicant == null) {
@@ -147,17 +162,17 @@ public class RegisterController {
 	        	 return ResponseEntity.badRequest().body("Email not found."); 
 	        } 
 	    }
-
+ 
 	    @PostMapping("/applicantverify-otp")
 	    public ResponseEntity<String> verifyOtp( @RequestBody  OtpVerificationRequest verificationRequest
-
+ 
 	    ) 
 	    {
 	    	try {
 	            String otp = verificationRequest.getOtp();
 	            String email = verificationRequest.getEmail();
 	            System.out.println(otp + email);
-
+ 
 	            if (otpService.validateOtp(email, otp)) {
 	                return ResponseEntity.ok("OTP verified successfully");
 	            } else {
@@ -170,45 +185,41 @@ public class RegisterController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying OTP");
 	        }
 	    }
-
+ 
 	    @PostMapping("/applicantreset-password/{email}")
 	    public ResponseEntity<String> setNewPassword(@RequestBody NewPasswordRequest request,@PathVariable String email) {
 	    	try {
 	            String newpassword = request.getPassword();
 	            String confirmedPassword = request.getConfirmedPassword();
-	            	
 	            if (email == null) {
 	                  throw new CustomException("Email not found.", HttpStatus.BAD_REQUEST);
 	            }
-	           
 	            Applicant applicant = regsiterService.findByEmail(email);
 	                if (applicant == null) {
 	                 throw new CustomException("User not found.", HttpStatus.BAD_REQUEST);
 	            }
-	            	
 	            applicant.setPassword(passwordEncoder.encode(newpassword));
 	           regsiterService.addApplicant(applicant);
 	               return ResponseEntity.ok("Password reset was done successfully");
 	        } catch (CustomException e) {
-	        	
 	            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
 	        } catch (Exception e) {
 	        	System.out.println(e.getMessage());
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting password");
 	        }
 	    }
-
+ 
 		@GetMapping("/viewApplicants")
-
+ 
 	    public ResponseEntity<List<Applicant>> getAllApplicants() {
-
+ 
 	        try {
 	            List<Applicant> applicants = regsiterService.getAllApplicants();
 	            return ResponseEntity.ok(applicants);
 	        } catch (Exception e) {
 	             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	        }
-
+ 
 	    }
 		@PostMapping("/applicantsignOut")
 	    public ResponseEntity<Void> signOut(@AuthenticationPrincipal Applicant user) {
@@ -219,10 +230,9 @@ public class RegisterController {
 		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		        }
 		    }
-
+ 
 		public void setOtpService(OtpService otpService2) {
 			otpService=otpService2;
-			
 		}
 		@PostMapping("/authenticateUsers/{id}")
 	    public String authenticateUser(@PathVariable Long id, @RequestBody PasswordRequest passwordRequest) {
@@ -230,5 +240,4 @@ public class RegisterController {
 	        String oldpassword = passwordRequest.getOldpassword();
 	        return regsiterService.authenticateUser(id, oldpassword, newpassword);
 	    }
-		
 }
