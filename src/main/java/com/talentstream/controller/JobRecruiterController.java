@@ -71,16 +71,22 @@ public class JobRecruiterController {
     }
  
  
-    @PostMapping("/recruiterLogin")
+     @PostMapping("/recruiterLogin")
     public ResponseEntity<Object> login(@RequestBody RecruiterLogin loginRequest) throws Exception {
-       JobRecruiter recruiter = recruiterService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        System.out.println(loginRequest.getEmail());
-        System.out.println(recruiter.getEmail());
+        JobRecruiter recruiter = recruiterService.login(loginRequest.getEmail(), loginRequest.getPassword());
  
-        if (recruiter!=null) {
-        	return createAuthenticationToken(loginRequest,recruiter);
+        if (recruiter != null) {
+            return createAuthenticationToken(loginRequest, recruiter);
         } else {
-            return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+            boolean emailExists = recruiterService.emailExists(loginRequest.getEmail());
+ 
+            if (emailExists) {
+              
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
+            } else {
+             
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No account found with this email address");
+            }
         }
     }
  
