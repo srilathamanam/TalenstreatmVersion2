@@ -1,6 +1,6 @@
 package com.talentstream.controller;
 import java.util.HashMap;
- 
+
 import java.util.List;
 import com.talentstream.dto.LoginDTO;
 import java.util.Map;
@@ -83,20 +83,20 @@ public class RegisterController {
 	        }
 	    }
  
-     	   @PostMapping("/applicantLogin")
+	    @PostMapping("/applicantLogin")
 	    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
 	        try {
 	            Applicant applicant = regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
 	            if (applicant != null) {
 	                return createAuthenticationToken(loginDTO, applicant);
 	            } else {
-	                // Check if the email exists in the database
+	           
 	                boolean emailExists = regsiterService.emailExists(loginDTO.getEmail());
 	                if (emailExists) {
-	                    // Incorrect password
+	             
 	                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
 	                } else {
-	                    // No account found with this email address
+	                 
 	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No account found with this email address");
 	                }
 	            }

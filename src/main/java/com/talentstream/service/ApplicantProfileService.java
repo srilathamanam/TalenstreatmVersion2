@@ -1,22 +1,17 @@
 package com.talentstream.service;
 
-
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.talentstream.exception.CustomException;
 import com.talentstream.dto.ApplicantProfileDTO;
+import com.talentstream.dto.ApplicantProfileViewDTO;
 import com.talentstream.entity.Applicant;
 import com.talentstream.entity.ApplicantProfile;
 import com.talentstream.repository.ApplicantProfileRepository;
 import com.talentstream.repository.RegisterRepository;
-import com.talentstream.util.MultipartFileUtils;
-
-import java.sql.Blob;
-
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class ApplicantProfileService {
@@ -48,25 +43,49 @@ public class ApplicantProfileService {
 	        }
 	    	}
 	    }
+	    
+	    public ApplicantProfileViewDTO getApplicantProfileViewDTO(long applicantId) {
+	        Applicant applicant = applicantService.findById(applicantId);
+	                if(applicant==null)
+	                	throw new EntityNotFoundException("Applicant not found with id: " + applicantId);
+
+	        ApplicantProfile applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
+	        		 if(applicantProfile==null)
+		                	throw  new EntityNotFoundException("ApplicantProfile not found for applicant with id: " + applicantId);
+
+	        return convertToDTO(applicant, applicantProfile);
+	    }
+	    private ApplicantProfileViewDTO convertToDTO(Applicant applicant, ApplicantProfile applicantProfile) {
+	        ApplicantProfileViewDTO dto = new ApplicantProfileViewDTO();
+	        dto.setApplicant(applicant);	       
+	        dto.setBasicDetails(applicantProfile.getBasicDetails());
+	        dto.setxClassDetails(applicantProfile.getxClassDetails());
+	        dto.setIntermediateDetails(applicantProfile.getIntermediateDetails());
+	        dto.setGraduationDetails(applicantProfile.getGraduationDetails());
+	        dto.setSkillsRequired(applicantProfile.getSkillsRequired());
+	        dto.setExperienceDetails(applicantProfile.getExperienceDetails());
+	        return dto;
+	    }
+	    
 
 
 	    public ApplicantProfileDTO getApplicantProfileById(long applicantId) {
-	    	try
-	    	{
-	    	ApplicantProfile applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
-	          	return convertEntityToDTO(applicantProfile);
-	    	}
-	    	catch(CustomException e)
-	    	{
-	    		throw new CustomException("Failed to get profile for applicant ID: " + applicantId, HttpStatus.INTERNAL_SERVER_ERROR);
-	    	}
-	    }
-
-	    public void deleteApplicantProfile(long applicantId) {
 	    	try {
-	            applicantProfileRepository.deleteById((int) applicantId);
-	        } catch (Exception e) {
-	            throw new CustomException("Failed to delete profile for applicant ID: " + applicantId, HttpStatus.INTERNAL_SERVER_ERROR);
+	            ApplicantProfile applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
+
+	            if (applicantProfile != null) {
+	                return convertEntityToDTO(applicantProfile);
+	            } else {
+	            	
+	                throw new CustomException("Please Fill your  Profile" , HttpStatus.NOT_FOUND);
+	            }
+	        } catch (CustomException e) {	        	
+	        	if (HttpStatus.NOT_FOUND.equals(e.getStatus())) {
+	                throw e;
+	            } else {
+	               
+	                throw new CustomException("Failed to get profile for applicant ID: " + applicantId, HttpStatus.INTERNAL_SERVER_ERROR);
+	            }
 	        }
 	    }
 	    
@@ -105,7 +124,39 @@ public class ApplicantProfileService {
 	        	        return applicantProfileDTO;
 	    }
 	       	        
-	   
+	    public String updateApplicantProfile(long applicantId, ApplicantProfileViewDTO updatedProfileDTO) {
+	    	 	Applicant applicant = applicantService.getApplicantById(applicantId);
+	    	if(applicant==null)	    	
+	    	  	throw new CustomException("Applicant not found " + applicantId, HttpStatus.NOT_FOUND);
+	    	else
+	    	{
+	    		 applicant.setName(updatedProfileDTO.getApplicant().getName());
+	             applicant.setMobilenumber(updatedProfileDTO.getApplicant().getMobilenumber());
+	             applicantService.save(applicant);
+	    	}
+	    		ApplicantProfile existingProfile = applicantProfileRepository.findByApplicantId(applicantId);
+	    		if (existingProfile == null) {
+	                throw new CustomException("Your  profile not found and please fill profile " + applicantId, HttpStatus.NOT_FOUND);
+	            }
+	    		else
+	    		{
+	    			 existingProfile.setBasicDetails(updatedProfileDTO.getBasicDetails());
+	    			 existingProfile.setExperienceDetails(updatedProfileDTO.getExperienceDetails());
+	    			 existingProfile.setGraduationDetails(updatedProfileDTO.getGraduationDetails());
+	    			 existingProfile.setIntermediateDetails(updatedProfileDTO.getIntermediateDetails());
+	    			 existingProfile.setSkillsRequired(updatedProfileDTO.getSkillsRequired());
+	    			 	applicantProfileRepository.save(existingProfile);	
+	    		}
+	            return "profile saved sucessfully";
+	    		}
+	
+	    public void deleteApplicantProfile(long applicantId) {
+	    	try {
+	            applicantProfileRepository.deleteById((int) applicantId);
+	        } catch (Exception e) {
+	            throw new CustomException("Failed to delete profile for applicant ID: " + applicantId, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
 	      
 }
 

@@ -13,7 +13,7 @@ public class HealthCheckScheduler {
     }
  
    
-    @Scheduled(fixedRate = 10000) // 10 seconds interval
+    @Scheduled(fixedRate = 10000000) // 10 seconds interval
   //@Scheduled(fixedRate = 300000) // 5 minutes interval (adjust as needed)
   
     public void healthCheck() {

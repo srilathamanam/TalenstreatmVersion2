@@ -78,7 +78,7 @@ public class CompanyProfileService {
         
         if (companyProfile != null) {
             String approvalStatus = companyProfile.getApprovalStatus();
-
+ 
             switch (approvalStatus.toLowerCase()) {
                 case "pending":
                     return "pending";

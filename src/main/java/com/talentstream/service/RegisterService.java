@@ -29,25 +29,25 @@ public class RegisterService {
 	    }
  
  
-public Applicant login(String email, String password) {
-	System.out.println("Login is Mached "+email);
-	try {
-	Applicant applicant = applicantRepository.findByEmail(email);
-	 if (applicant != null && passwordEncoder.matches(password, applicant.getPassword())) {
-	        return applicant;
-	    } else {
-	        return null;
-	    }
-	}
-	catch(Exception e)
-	{
-	System.out.println(e.getMessage());
-	return null;
-	} 
-}
- public boolean emailExists(String email) {
-	 return applicantRepository.existsByEmail(email);
-}
+    public Applicant login(String email, String password) {
+    	System.out.println("Login is Mached "+email);
+    	try {
+    	Applicant applicant = applicantRepository.findByEmail(email);
+    	 if (applicant != null && passwordEncoder.matches(password, applicant.getPassword())) {
+    	        return applicant;
+    	    } else {
+    	        return null;
+    	    }
+    	}
+    	catch(Exception e)
+    	{
+    	System.out.println(e.getMessage());
+    	return null;
+    	} 
+    }
+    public boolean emailExists(String email) {
+   	 return applicantRepository.existsByEmail(email);
+   }
 public Applicant findById(Long id) {
 	try {
         return applicantRepository.findById(id);

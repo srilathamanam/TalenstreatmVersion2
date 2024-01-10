@@ -49,17 +49,18 @@ public class JobRecruiterService {
 	        }
 	    }
     public JobRecruiter login(String email, String password) {
-    	 JobRecruiter recruiter = recruiterRepository.findByEmail(email);
-         if (recruiter != null && passwordEncoder.matches(password, recruiter.getPassword())) {
-             return recruiter;
-         } else {
-        	 return null;
- 
-         }
-    }
-	public boolean emailExists(String email) {
-        return recruiterRepository.existsByEmail(email);
-    }
+    	JobRecruiter recruiter = recruiterRepository.findByEmail(email);
+        if (recruiter != null && passwordEncoder.matches(password, recruiter.getPassword())) {
+            return recruiter;
+        } else {
+       	 return null;
+        }
+   }
+  
+   public boolean emailExists(String email) {
+       return recruiterRepository.existsByEmail(email);
+   }
+    
     public JobRecruiter findById(Long id) {
     	return recruiterRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("JobRecruiter not found for ID: " + id));

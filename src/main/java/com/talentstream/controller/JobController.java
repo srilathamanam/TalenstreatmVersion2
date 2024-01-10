@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.talentstream.entity.Job;
 import com.talentstream.exception.CustomException;
+import com.talentstream.service.CompanyLogoService;
 import com.talentstream.service.JobService;
 
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,10 @@ public class JobController {
 	  final ModelMapper modelMapper = new ModelMapper();
     private final JobService jobService;
     private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
+    
+    @Autowired
+    	private CompanyLogoService companyLogoService;
+    
     @Autowired
     public JobController(JobService jobService) {
         this.jobService = jobService;
@@ -53,11 +58,11 @@ public class JobController {
     public ResponseEntity<?> getJobsByRecruiter(@PathVariable Long jobRecruiterId) {
     	try {
             List<Job> jobs = jobService.getJobsByRecruiter(jobRecruiterId);
-
+ 
             if (jobs.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
-
+ 
             List<JobDTO> jobDTOs = jobs.stream()
             		.map(job -> {
                         JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
@@ -66,10 +71,21 @@ public class JobController {
                         jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
                         jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
                         jobDTO.setEmail(job.getJobRecruiter().getEmail());
+                        jobDTO.setRecruiterId(job.getJobRecruiter().getRecruiterId());
                         return jobDTO;
                     })
                     .collect(Collectors.toList());
-
+            for (JobDTO job : jobDTOs) {
+    		    long jobRecruiterId1 = job.getRecruiterId();
+    		    byte[] imageBytes = null;
+    		    try {
+    		    	imageBytes = companyLogoService.getCompanyLogo(jobRecruiterId1);
+    		    }catch (CustomException ce) {
+    	        	System.out.println(ce.getMessage());  	        }
+     
+    		      		        job.setLogoFile(imageBytes);
+    		}
+ 
             return ResponseEntity.ok(jobDTOs);
         } catch (CustomException ce) {
             return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
@@ -171,7 +187,7 @@ public class JobController {
         jobDTO.setIndustryType(job.getIndustryType());
         jobDTO.setMinimumQualification(job.getMinimumQualification());
         jobDTO.setSpecialization(job.getSpecialization());
-	     jobDTO.setRecruiterId(job.getId());
+	     jobDTO.setRecruiterId(job.getJobRecruiter().getRecruiterId());
         jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
         jobDTO.setEmail(job.getJobRecruiter().getEmail());
         jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber()); 

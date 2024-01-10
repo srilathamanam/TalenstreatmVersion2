@@ -7,14 +7,21 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.talentstream.dto.ApplicantProfileDTO;
+import com.talentstream.dto.ApplicantProfileViewDTO;
 import com.talentstream.exception.CustomException;
 import com.talentstream.service.ApplicantProfileService;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +32,10 @@ public class ApplicantProfileController {
 	private final ApplicantProfileService applicantProfileService;
 	
 	  private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
-    @Autowired
+    
+	  @Autowired
     public ApplicantProfileController(ApplicantProfileService applicantProfileService) {
-        this.applicantProfileService = applicantProfileService;
-		
+        this.applicantProfileService = applicantProfileService;		
     }
 
     @PostMapping("/createprofile/{applicantid}")
@@ -41,15 +48,18 @@ public class ApplicantProfileController {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         }
     }
-   @GetMapping("/getdetails/{applicantid}")
-   public ResponseEntity<ApplicantProfileDTO> getApplicantProfileById(@PathVariable long applicantid) {
-	   try {
-		   ApplicantProfileDTO applicantProfileDTO = applicantProfileService.getApplicantProfileById(applicantid);
-           return ResponseEntity.ok(applicantProfileDTO);
-       } catch (CustomException e) {
-           return ResponseEntity.status(e.getStatus()).body(null);
-       }
-   }
+
+    @GetMapping("/getdetails/{applicantid}")
+    public ResponseEntity<?> getApplicantProfileById(@PathVariable long applicantid) {
+        try {
+            ApplicantProfileDTO applicantProfileDTO = applicantProfileService.getApplicantProfileById(applicantid);
+            return ResponseEntity.ok(applicantProfileDTO);
+        } catch (CustomException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(e.getStatus()).body(errorResponse);
+        }
+    }
        @DeleteMapping("/deletedetails/{applicantId}")
        public ResponseEntity<Void> deleteApplicantProfile(@PathVariable int applicantId) {
     	   try {
@@ -59,4 +69,28 @@ public class ApplicantProfileController {
                return ResponseEntity.status(e.getStatus()).build();
            }
        }
+       
+       @PutMapping("/updateprofile/{applicantid}")
+       public ResponseEntity<String> updateApplicantProfile(@PathVariable long applicantid, @RequestBody ApplicantProfileViewDTO updatedProfileDTO) throws IOException {
+           try {
+        	           	   
+               String result = applicantProfileService.updateApplicantProfile(applicantid, updatedProfileDTO);
+               return ResponseEntity.status(HttpStatus.OK).body(result);
+           } catch (CustomException e) {
+               logger.error("INTERNAL_SERVER_ERROR");
+               return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+           }
+       }
+       
+       @GetMapping("/{applicantId}/profile-view")
+       public ResponseEntity<ApplicantProfileViewDTO> getApplicantProfileViewDTO(@PathVariable long applicantId) {
+           try {
+               ApplicantProfileViewDTO dto = applicantProfileService.getApplicantProfileViewDTO(applicantId);
+               return ResponseEntity.ok(dto);
+           } catch (EntityNotFoundException e) {
+               return ResponseEntity.notFound().build();
+           }
+       }
+       
+      
 }

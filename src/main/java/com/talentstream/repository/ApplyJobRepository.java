@@ -27,15 +27,11 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 		       "WHERE r.id = :jobRecruiterId")
 		List<AppliedApplicantInfo> findAppliedApplicantsInfo(@Param("jobRecruiterId") long jobRecruiterId);
 	
-	boolean existsByApplicantAndJob(Applicant applicant, Job job);
-	
+	boolean existsByApplicantAndJob(Applicant applicant, Job job);	
 	@Query("SELECT COUNT(ja) FROM ApplyJob ja WHERE ja.job.jobRecruiter.id = :recruiterId")
-    long countJobApplicantsByRecruiterId(@Param("recruiterId") Long recruiterId);
-	
-	long countByApplicantStatus(String applicantStatus);
-	
-	long countByApplicantStatusIn(List<String> applicantStatusList);
-	
+    long countJobApplicantsByRecruiterId(@Param("recruiterId") Long recruiterId);	
+	long countByApplicantStatus(String applicantStatus);	
+	long countByApplicantStatusIn(List<String> applicantStatusList);	
 	List<ApplyJob> findByJobId(Long jobId);
 	
 	@Query("SELECT DISTINCT aj " +
@@ -61,4 +57,6 @@ long countShortlistedAndInterviewedApplicants(@Param("recruiterId") Long recruit
                                            @Param("statusList") List<String> statusList);
 
 	ApplyJob findByJobAndApplicant(Job job, Applicant applicant);
+	
+	
 }

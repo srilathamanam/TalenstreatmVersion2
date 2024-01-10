@@ -71,7 +71,7 @@ public class JobRecruiterController {
     }
  
  
-     @PostMapping("/recruiterLogin")
+    @PostMapping("/recruiterLogin")
     public ResponseEntity<Object> login(@RequestBody RecruiterLogin loginRequest) throws Exception {
         JobRecruiter recruiter = recruiterService.login(loginRequest.getEmail(), loginRequest.getPassword());
  

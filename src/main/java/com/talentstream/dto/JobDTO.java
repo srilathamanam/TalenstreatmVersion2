@@ -2,11 +2,20 @@ package com.talentstream.dto;
 
 import java.time.LocalDate;
 import java.util.Set;
+
 public class JobDTO {
 	 private Long id;
 	   private Long recruiterId;
-	  
-	    public String getCompanyname() {
+	   private byte[] logoFile;
+
+
+		public byte[] getLogoFile() {
+		return logoFile;
+	}
+	public void setLogoFile(byte[] imageBytes) {
+		this.logoFile = imageBytes;
+	}
+		public String getCompanyname() {
 		return companyname;
 	}
 	public void setCompanyname(String companyname) {
@@ -46,11 +55,9 @@ public class JobDTO {
 	    public Long getApplyJobId() {
 	    	        return applyJobId;
 	    	    }
-	     
 	    	    public void setApplyJobId(Long applyJobId) {
 	    	        this.applyJobId = applyJobId;
 	    	    }
-	    
 		public String getJobStatus() {
 			return jobStatus;
 		}
@@ -153,6 +160,5 @@ public class JobDTO {
 		public void setCreationDate(LocalDate creationDate) {
 			this.creationDate = creationDate;
 		}
-	    
-	    
+
 }

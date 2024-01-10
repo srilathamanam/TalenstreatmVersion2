@@ -15,12 +15,14 @@ import com.talentstream.entity.ApplicantImage;
 import com.talentstream.exception.CustomException;
 import com.talentstream.repository.ApplicantImageRepository;
 import com.talentstream.repository.RegisterRepository;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
- 
+import org.springframework.core.io.InputStreamResource;
 @Service
 public class ApplicantImageService {
  
@@ -136,6 +138,8 @@ public class ApplicantImageService {
     }
  
 	public ResponseEntity<Resource> getProfilePicByApplicantId(long applicantId) {
+		try
+		{
 		ApplicantImage applicantImage = applicantImageRepository.findByApplicantId(applicantId);
         if (applicantImage != null) {
             String fileName = applicantImage.getImagename();
@@ -156,9 +160,20 @@ public class ApplicantImageService {
 			        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 			        .body(resource);
         } else {
-            throw new CustomException("Image not found for applicant ID: " + applicantId, HttpStatus.NOT_FOUND);
+            String errorMessage = "Please upload your profile image  " ;
+            InputStreamResource errorResource = new InputStreamResource(new ByteArrayInputStream(errorMessage.getBytes()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(errorResource);
         }
-	}
+    } catch (Exception e) {
+        String errorMessage = "Internal Server Error";
+        InputStreamResource errorResource = new InputStreamResource(new ByteArrayInputStream(errorMessage.getBytes()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(errorResource);
+    }
 }
  
+}
     
