@@ -50,11 +50,11 @@ public class JobRecruiterService {
 	    }
     public JobRecruiter login(String email, String password) {
     	 JobRecruiter recruiter = recruiterRepository.findByEmail(email);
- 
          if (recruiter != null && passwordEncoder.matches(password, recruiter.getPassword())) {
              return recruiter;
          } else {
-             throw new CustomException("Login failed", HttpStatus.UNAUTHORIZED);
+        	 return null;
+ 
          }
     }
     public JobRecruiter findById(Long id) {
