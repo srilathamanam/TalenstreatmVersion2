@@ -90,7 +90,7 @@ public class CompanyProfileService {
                     throw new CustomException("Invalid approval status.", HttpStatus.BAD_REQUEST);
             }
         } else {
-            throw new CustomException("Profile not found.", HttpStatus.NOT_FOUND);
+           return "Profile not found";
         }
     }
     
