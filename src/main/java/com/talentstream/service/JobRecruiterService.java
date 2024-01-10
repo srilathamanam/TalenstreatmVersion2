@@ -57,6 +57,9 @@ public class JobRecruiterService {
  
          }
     }
+	public boolean emailExists(String email) {
+        return recruiterRepository.existsByEmail(email);
+    }
     public JobRecruiter findById(Long id) {
     	return recruiterRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("JobRecruiter not found for ID: " + id));
