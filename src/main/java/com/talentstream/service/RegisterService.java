@@ -45,7 +45,9 @@ public Applicant login(String email, String password) {
 	return null;
 	} 
 }
- 
+ public boolean emailExists(String email) {
+	 return applicantRepository.existsByEmail(email);
+}
 public Applicant findById(Long id) {
 	try {
         return applicantRepository.findById(id);
