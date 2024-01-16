@@ -101,6 +101,7 @@ public class FindRecommendedJobController {
         jobDTO.setJobHighlights(job.getJobHighlights());
         jobDTO.setDescription(job.getDescription());
         jobDTO.setCreationDate(job.getCreationDate());
+        jobDTO.setSaveJobStatus(job.getSaveJobStatus());
         
         Set<RecuriterSkillsDTO> skillsDTOList = job.getSkillsRequired().stream()
                 .map(this::convertSkillsEntityToDTO)

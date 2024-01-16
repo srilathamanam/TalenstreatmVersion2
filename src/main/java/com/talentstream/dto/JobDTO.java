@@ -8,7 +8,15 @@ public class JobDTO {
 	   private Long recruiterId;
 	   private byte[] logoFile;
 
-
+	   private
+	   String saveJobStatus="Not Saved";
+	   
+		public String getSaveJobStatus() {
+		return saveJobStatus;
+	}
+	public void setSaveJobStatus(String saveJobStatus) {
+		this.saveJobStatus = saveJobStatus;
+	}
 		public byte[] getLogoFile() {
 		return logoFile;
 	}

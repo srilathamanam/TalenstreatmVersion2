@@ -51,7 +51,9 @@ public class Job {
 	public void setMinimumExperience(int minimumExperience) {
 		this.minimumExperience = minimumExperience;
 	}
-
+	@Column(name = "save_job_status")
+    private String saveJobStatus="Not Saved";
+	
 @Column(nullable = false)
     private int maximumExperience;
 
@@ -62,6 +64,14 @@ public class Job {
  
     public double getMinSalary() {
 		return minSalary;
+	}
+
+	public String getSaveJobStatus() {
+		return saveJobStatus;
+	}
+
+	public void setSaveJobStatus(String saveJobStatus) {
+		this.saveJobStatus = saveJobStatus;
 	}
 
 	public void setMinSalary(double minSalary) {
