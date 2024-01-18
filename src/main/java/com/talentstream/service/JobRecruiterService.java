@@ -109,14 +109,16 @@ public class JobRecruiterService {
     }
 	
 	public String authenticateRecruiter(Long id,String oldPassword, String newPassword) {
-	       //BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-
+	   
 	        try {
 	        	JobRecruiter opUser = recruiterRepository.findByRecruiterId(id);
 	            System.out.println(opUser.getPassword());
 	            System.out.println(passwordEncoder.encode(oldPassword));
 	            if (opUser != null) {
 	            	if(passwordEncoder.matches(oldPassword, opUser.getPassword())) {
+	            		if (passwordEncoder.matches(newPassword, opUser.getPassword())) {
+	            			return "your new password should not be same as old password";
+	            		}
 	            		opUser.setPassword(passwordEncoder.encode(newPassword));
 	            		recruiterRepository.save(opUser);
 
@@ -125,23 +127,18 @@ public class JobRecruiterService {
 	            	else {
 	            		return "Your old password not matching with data base password";
 	            	}
-	            	 	
-	            		 
-	            
-	            }
+	            	            }
 	            else {
 	            	return "User not found with given id";
 	            }
 	        }
 	               
 	    	catch (Exception e) {
-	         
-	            e.printStackTrace();
-	            
+	         	            e.printStackTrace();	            
 	           return "user not found with this given id";
 	        }
-	}
-	
+			
+	    }
 	}
 
  
