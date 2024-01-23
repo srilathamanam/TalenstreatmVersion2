@@ -9,13 +9,11 @@ import java.util.Set;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
- 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
- 
 import com.talentstream.dto.JobDTO;
 import com.talentstream.dto.RecuriterSkillsDTO;
 import com.talentstream.entity.Alerts;
@@ -54,7 +52,6 @@ public class ApplyJobService {
 	    private JavaMailSender javaMailSender;
 	    @Autowired
 	    private AlertsRepository alertsRepository;
- 
 public String ApplicantApplyJob(long  applicantId, long jobId) {
 	    	try {
 	            Applicant applicant = applicantRepository.findById(applicantId);
@@ -97,7 +94,6 @@ public String ApplicantApplyJob(long  applicantId, long jobId) {
 	                    throw new CustomException("An error occurred while applying for the job: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	             }
 	      }
- 
 public long countAppliedJobsForApplicant(long applicantId) {
     try {
         // Check if the applicant exists
@@ -105,7 +101,6 @@ public long countAppliedJobsForApplicant(long applicantId) {
             // Throw CustomException if the applicant is not found
             throw new CustomException("Applicant not found", HttpStatus.NOT_FOUND);
         }
- 
         // Use the custom query to count applied jobs
         return applyJobRepository.countByApplicantId(applicantId);
     } catch (CustomException e) {
@@ -182,7 +177,6 @@ public long countAppliedJobsForApplicant(long applicantId) {
 			List<JobDTO> result = new ArrayList<>();
     try {
         List<ApplyJob> appliedJobs = applyJobRepository.findByApplicantId(applicantId);
- 
         for (ApplyJob appliedJob : appliedJobs) {
             Job job = appliedJob.getJob();
             JobDTO jobDTO = new JobDTO();
@@ -212,12 +206,11 @@ public long countAppliedJobsForApplicant(long applicantId) {
             jobDTO.setJobHighlights(job.getJobHighlights());
             jobDTO.setDescription(job.getDescription());
             jobDTO.setCreationDate(job.getCreationDate());
- 
             jobDTO.setCompanyname(job.getJobRecruiter().getCompanyname());
             jobDTO.setMobilenumber(job.getJobRecruiter().getMobilenumber());
             jobDTO.setEmail(job.getJobRecruiter().getEmail());	           
             jobDTO.setApplyJobId(appliedJob.getApplyjobid());
-
+ 
        		    long jobRecruiterId = appliedJob.getJob().getJobRecruiter().getRecruiterId();
        		    byte[] imageBytes = null;
        		    try {
@@ -227,19 +220,16 @@ public long countAppliedJobsForApplicant(long applicantId) {
        	        } 
        		    System.out.println("Job Recruiter ID: " + jobRecruiterId);
        		    System.out.println("Image Bytes: " + Arrays.toString(imageBytes));
- 
-       		   
+
        		 jobDTO.setLogoFile(imageBytes);
-
-
  
+ 
+
             result.add(jobDTO);
         }
- 
     } catch (Exception e) {
         throw new CustomException("Failed to get applied jobs for the applicant", HttpStatus.INTERNAL_SERVER_ERROR);
     }
- 
     return result;
   }
 	public Map<String, List<AppliedApplicantInfoDTO>> getAppliedApplicants(long jobRecruiterId) {
@@ -269,7 +259,7 @@ public long countAppliedJobsForApplicant(long applicantId) {
 	    }
 	    return applicantMap;
 	}
-
+ 
 private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantInfo) {
 	 AppliedApplicantInfoDTO dto = new AppliedApplicantInfoDTO();
 	    dto.setApplyjobid(appliedApplicantInfo.getApplyjobid());
@@ -286,7 +276,7 @@ private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantIn
 	    dto.setLocation(appliedApplicantInfo.getLocation());
 	    return dto;
 }
-
+ 
 public String updateApplicantStatus(Long applyJobId, String newStatus) {
     ApplyJob applyJob = applyJobRepository.findById(applyJobId)
             .orElseThrow(() -> new EntityNotFoundException("ApplyJob not found"));
@@ -311,7 +301,6 @@ public String updateApplicantStatus(Long applyJobId, String newStatus) {
     }
     return "Company information not found for the given ApplyJob";    
 }
- 
 public List<ApplicantJobInterviewDTO> getApplicantJobInterviewInfoForRecruiterAndStatus(
         long recruiterId, String applicantStatus) {
 	try {
@@ -327,16 +316,16 @@ public long countJobApplicantsByRecruiterId(Long recruiterId) {
         throw new CustomException("Failed to count job applicants for the recruiter", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-public long countSelectedApplicants() {   
+public long countSelectedApplicants() {
 	 try {
-         return applyJobRepository.countByApplicantStatus("selected");
+         return applyJobRepository.countByApplicantStatus("Selected");
      } catch (Exception e) {
          throw new CustomException("Failed to count selected applicants", HttpStatus.INTERNAL_SERVER_ERROR);
      }
 }
 public long countShortlistedAndInterviewedApplicants() {
 	try {
-        List<String> desiredStatusList = Arrays.asList("shortlisted", "interviews");
+        List<String> desiredStatusList = Arrays.asList("Shortlisted", "Interviewing");
         return applyJobRepository.countByApplicantStatusIn(desiredStatusList);
     } catch (Exception e) {
         throw new CustomException("Failed to count shortlisted and interviewed applicants", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -347,24 +336,20 @@ public List<ApplicantStatusHistory> getApplicantStatusHistory(long applyJobId) {
 	// TODO Auto-generated method stub
 	return statusHistoryRepository.findByApplyJob_ApplyjobidOrderByChangeDateDesc(applyJobId);
 }
- 
 //This method is to get alerts sent by recruiter
 //public List<Alerts> getAlerts(long applyjobid) {
 //	// TODO Auto-generated method stub
 //	return alertsRepository.findByApplyJob_applyJobIdOrderByChangeDateDesc(applyjobid);
 //}
- 
 public List<Alerts> getAlerts(long applicantId) {
 	return alertsRepository.findByApplicantIdOrderByChangeDateDesc(applicantId);
 }
- 
 //This method is to reset count of alerts to zero once after reading all the alert messages.
 public void resetAlertCount(long applyJobId) {
 	// TODO Auto-generated method stub
 	try {
       ApplyJob applyJob = applyJobRepository.findById(applyJobId)
               .orElseThrow(() -> new EntityNotFoundException("Apply job not found"));
- 
       applyJob.getApplicant().setAlertCount(0);
       applyJobRepository.save(applyJob);
   } catch (Exception e) {
@@ -372,7 +357,6 @@ public void resetAlertCount(long applyJobId) {
   	e.printStackTrace();
   }
 }
- 
 public long countShortlistedAndInterviewedApplicants(long recruiterId) {
     try {
         List<String> desiredStatusList = Arrays.asList("shortlisted", "interviewing");
@@ -381,12 +365,10 @@ public long countShortlistedAndInterviewedApplicants(long recruiterId) {
         throw new CustomException("Failed to count shortlisted and interviewed applicants", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
- 
 public ApplyJob getByJobAndApplicant(Long jobId, Long applicantId) {
     try {
         Job job = jobRepository.findById(jobId).orElseThrow(() -> new EntityNotFoundException("Job not found"));
         Applicant applicant = applicantRepository.findById(applicantId);
- 
         return applyJobRepository.findByJobAndApplicant(job, applicant);
     } catch (EntityNotFoundException e) {
         throw new CustomException("Job or Applicant not found", HttpStatus.NOT_FOUND);
