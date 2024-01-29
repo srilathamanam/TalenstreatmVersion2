@@ -345,14 +345,17 @@ public List<Alerts> getAlerts(long applicantId) {
 	return alertsRepository.findByApplicantIdOrderByChangeDateDesc(applicantId);
 }
 //This method is to reset count of alerts to zero once after reading all the alert messages.
-public void resetAlertCount(long applyJobId) {
+public void resetAlertCount(long applicantId) {
 	// TODO Auto-generated method stub
 	try {
-      ApplyJob applyJob = applyJobRepository.findById(applyJobId)
-              .orElseThrow(() -> new EntityNotFoundException("Apply job not found"));
-      applyJob.getApplicant().setAlertCount(0);
-		System.out.println(applyJob.getApplicant().getAlertCount());
-      applyJobRepository.save(applyJob);
+		
+		Applicant applicant=applicantRepository.findById(applicantId);
+		
+		applicant.setAlertCount(0);
+		applicantRepository.save(applicant);
+		
+		
+		
   } catch (Exception e) {
       // Handle exceptions, log, and consider appropriate error handling
   	e.printStackTrace();
