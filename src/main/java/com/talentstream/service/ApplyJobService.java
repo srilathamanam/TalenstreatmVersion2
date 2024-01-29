@@ -351,7 +351,7 @@ public void resetAlertCount(long applyJobId) {
       ApplyJob applyJob = applyJobRepository.findById(applyJobId)
               .orElseThrow(() -> new EntityNotFoundException("Apply job not found"));
       applyJob.getApplicant().setAlertCount(0);
-		System.out.println(applyJob.getApplicant().getAlertCount(0);
+		System.out.println(applyJob.getApplicant().getAlertCount());
       applyJobRepository.save(applyJob);
   } catch (Exception e) {
       // Handle exceptions, log, and consider appropriate error handling
