@@ -84,40 +84,61 @@ public class RegisterController {
 	    }
  
 	    @PostMapping("/applicantLogin")
-	    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
-	        try {
-	            Applicant applicant = regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
-	            if (applicant != null) {
-	                return createAuthenticationToken(loginDTO, applicant);
-	            } else {
-	           
-	                boolean emailExists = regsiterService.emailExists(loginDTO.getEmail());
-	                if (emailExists) {
-	             
-	                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
-	                } else {
-	                 
-	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No account found with this email address");
-	                }
-	            }
-	        } catch (BadCredentialsException e) {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
-	        } catch (Exception e) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
-	        }
-	    }
+	  public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
+	      try {
+	          Applicant applicant = null;
+	          if (regsiterService.isGoogleSignIn(loginDTO)) {
+	              // Handle Google Sign-In
+// 	        	  Applicant app=new Applicant();
+// 	        	  app.setEmail(loginDTO.getEmail());
+// 	        	  registerrepo.save(app);
+	        	 System.out.println("Before " +loginDTO.getEmail());
+	              applicant = regsiterService.googleSignIn(loginDTO.getEmail());
+	              System.out.println(applicant.getEmail());
+	             System.out.println("could return obj successfully");
+	          } else {
+	              // Handle regular login
+	              applicant = regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
+	          }
  
-	    private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
+	          if (applicant != null) {
+	              return createAuthenticationToken(loginDTO, applicant);
+	          } else {
+	              return ResponseEntity.badRequest().body("Login failed");
+	          }
+	      } catch (BadCredentialsException e) {
+	          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
+	      } catch (Exception e) {
+	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
+	      }
+	  }
+private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
 	    	try {
-	            authenticationManager.authenticate(
-	                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
-	            );
-	            UserDetails userDetails = myUserDetailsService.loadUserByUsername(applicant.getEmail());
-	            final String jwt = jwtTokenUtil.generateToken(userDetails);
-	            return ResponseHandler.generateResponse("Login successfully" + userDetails.getAuthorities(), HttpStatus.OK, new AuthenticationResponse(jwt), applicant.getEmail(), applicant.getName(), applicant.getId());
+	    		if (regsiterService.isGoogleSignIn(loginDTO)) {
+	                // Handle Google sign-in separately
+	    			System.out.println("Now I am at token gen");
+	                UserDetails userDetails = myUserDetailsService.loadUserByUsername(applicant.getEmail());
+	                final String jwt = jwtTokenUtil.generateToken(userDetails);
+	                return ResponseHandler.generateResponse("Login successfully" + userDetails.getAuthorities(), HttpStatus.OK, new AuthenticationResponse(jwt), applicant.getEmail(), applicant.getName(), applicant.getId());
+	            } else {
+	                // Regular login functionality
+	                authenticationManager.authenticate(
+	                        new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+	                );
+	                UserDetails userDetails = myUserDetailsService.loadUserByUsername(applicant.getEmail());
+	                final String jwt = jwtTokenUtil.generateToken(userDetails);
+	                return ResponseHandler.generateResponse("Login successfully" + userDetails.getAuthorities(), HttpStatus.OK, new AuthenticationResponse(jwt), applicant.getEmail(), applicant.getName(), applicant.getId());
+	            }
+//	            authenticationManager.authenticate(
+//	                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+//	            );
+//	            UserDetails userDetails = myUserDetailsService.loadUserByUsername(applicant.getEmail());
+//	            final String jwt = jwtTokenUtil.generateToken(userDetails);
+//	            return ResponseHandler.generateResponse("Login successfully" + userDetails.getAuthorities(), HttpStatus.OK, new AuthenticationResponse(jwt), applicant.getEmail(), applicant.getName(), applicant.getId());
 	        } catch (BadCredentialsException e) {
 	            throw new CustomException("Incorrect username or password", HttpStatus.UNAUTHORIZED);
 	        }
+	           
 		}
  
  
