@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -147,5 +148,30 @@ public class JobService {
 		            })
 		            .collect(Collectors.toSet());
 		}
+	public void changeJobStatus(Long jobId, String newStatus) {
+	        try {
+	            Job job = jobRepository.findById(jobId)
+	                    .orElseThrow(() -> new CustomException("Job not found", HttpStatus.NOT_FOUND));
+ 
+	            // Validate newStatus (optional, depending on your requirements)
+ 
+	            job.setStatus(newStatus);
+	            jobRepository.save(job);
+	        } catch (CustomException ce) {
+	            throw ce;
+	        } catch (Exception e) {
+	            throw new CustomException("Error changing job status", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	 public String getJobStatus(Long jobId) {
+	        Optional<Job> optionalJob = jobRepository.findById(jobId);
+ 
+	        if (optionalJob.isPresent()) {
+	            Job job = optionalJob.get();
+	            return job.getStatus(); // Assuming the status is a field in the Job entity
+	        } else {
+	            throw new CustomException("Job not found",HttpStatus.NOT_FOUND);
+	        }
+	    }
 	
 }
