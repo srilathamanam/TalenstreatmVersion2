@@ -131,6 +131,16 @@ public class Job {
 
     @Column(name = "job_status")
 	private String jobStatus="Apply Now";
+
+	@Column(nullable = false)
+    private String status = "active"; // New field with a default value of "active"
+    public String getStatus() {
+        return status;
+    }
+ 
+    public void setStatus(String status) {
+        this.status = status;
+    }
     
 	public Long getId() {
 		return id;
