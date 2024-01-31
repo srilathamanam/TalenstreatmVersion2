@@ -139,6 +139,50 @@ public void updatePassword(String userEmail, String newPassword) {
         applicant.setPassword(registrationDTO.getPassword());       
         return applicant;
     }
+	public boolean isGoogleSignIn(LoginDTO loginDTO) {
+    // Check if password is null or empty
+    return loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty();
+}
+public Applicant googleSignIn(String email) {
+    Applicant applicant = null;
+ 
+    try {
+        applicant = applicantRepository.findByEmail(email);
+ 
+        if (applicant == null) {
+            // If the applicant does not exist, create a new one
+            Applicant newApplicant = new Applicant();
+            newApplicant.setEmail(email);
+ 
+            // Generate a random number as the password
+            String randomPassword = generateRandomPassword();
+            newApplicant.setPassword(passwordEncoder.encode(randomPassword));
+            
+            
+ 
+            // Save the new applicant
+            applicantRepository.save(newApplicant);
+ 
+            return newApplicant;
+        } else {
+            return applicant;
+        }
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+ 
+    System.out.println("Checking");
+    System.out.println("Able to return applicant");
+    System.out.println(applicant != null ? applicant.getEmail() : "Applicant is null");
+    return applicant;
+}
+ 
+private String generateRandomPassword() {
+    // Generate a random 6-digit password
+    Random random = new Random();
+    int randomPassword = 100000 + random.nextInt(900000);
+    return String.valueOf(randomPassword);
+}
 	
 	public String authenticateUser(Long id,String oldPassword, String newPassword) {
 	       try {
