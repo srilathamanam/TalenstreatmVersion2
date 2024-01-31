@@ -93,6 +93,7 @@ public class JobController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
         }
     }
+	
     
     @GetMapping("/search")
     public ResponseEntity<?> searchJobs(@ModelAttribute JobSearchCriteria searchCriteria) {
@@ -197,5 +198,28 @@ public class JobController {
                 .collect(Collectors.toSet());
         jobDTO.setSkillsRequired(skillsDTOList);  
         return jobDTO;
+    }
+	@PostMapping("/changeStatus/{jobId}/{newStatus}")
+    public ResponseEntity<String> changeJobStatus(@PathVariable Long jobId, @PathVariable String newStatus) {
+        try {
+            jobService.changeJobStatus(jobId, newStatus);
+            return ResponseEntity.ok("Job status changed successfully.");
+        } catch (CustomException ce) {
+            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+        }
+    }
+    @GetMapping("/getStatus/{jobId}")
+    public ResponseEntity<String> getJobStatus(@PathVariable Long jobId) {
+        try {
+            // Retrieve job status from the service
+            String jobStatus = jobService.getJobStatus(jobId);
+            return ResponseEntity.ok(jobStatus);
+        } catch (CustomException ce) {
+            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+        }
     }
 }
