@@ -1,8 +1,10 @@
 package com.talentstream.controller;
 import java.util.HashMap;
-
+ 
 import java.util.List;
 import com.talentstream.dto.LoginDTO;
+import com.talentstream.dto.LoginDTO1;
+ 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +26,6 @@ import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
 import com.talentstream.entity.PasswordRequest;
 import com.talentstream.exception.CustomException;
-import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.response.ResponseHandler;
 import com.talentstream.service.EmailService;
@@ -36,32 +37,34 @@ import com.talentstream.service.JobRecruiterService;
  
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+ 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/applicant")
 public class RegisterController {
 	@Autowired
     MyUserDetailsService myUserDetailsService;
+	
 	 @Autowired
 	    private OtpService otpService;
 	 @Autowired
-	private JobRecruiterRepository recruiterRepository;
- 
-	 @Autowired
-	RegisterRepository applicantRepository;
-
+	 private RegisterRepository registerrepo;
+	
+	
 		 private Map<String, Boolean> otpVerificationMap = new HashMap<>();
 		 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
 		 @Autowired
 			private AuthenticationManager authenticationManager;
 		     @Autowired
 			private JwtUtil jwtTokenUtil;
+		    
 	    @Autowired
 	    private EmailService emailService;
+	    
 		@Autowired
 	     RegisterService regsiterService;
 		@Autowired
-		JobRecruiterService recruiterService;	 
+		JobRecruiterService recruiterService;	
 		@Autowired
 		private PasswordEncoder passwordEncoder;
  
@@ -83,7 +86,23 @@ public class RegisterController {
 	        }
 	    }
  
-	    @PostMapping("/applicantLogin")
+//     	    @PostMapping("/applicantLogin")
+//	    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
+//     	    	try {
+//     	            Applicant applicant =regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
+//     	            if (applicant != null) {
+//     	                return createAuthenticationToken(loginDTO, applicant);
+//     	            } else {
+//     	                return ResponseEntity.badRequest().body("Login failed");
+//     	            }
+//     	        } catch (BadCredentialsException e) {
+//     	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
+//     	        } catch (Exception e) {
+//     	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
+//     	        }
+//	    }
+	    
+	   @PostMapping("/applicantLogin")
 	  public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
 	      try {
 	          Applicant applicant = null;
@@ -112,7 +131,24 @@ public class RegisterController {
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
 	      }
 	  }
-private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
+     	
+//     	   @PostMapping("/applicantLogin1")
+//   	    public ResponseEntity<Object> login1(@RequestBody LoginDTO1 loginDTO1) throws Exception {
+//        	    	try {
+//        	            Applicant applicant =regsiterService.login1(loginDTO1.getEmail());
+//        	            if (applicant != null) {
+//        	                return createAuthenticationToken(loginDTO1, applicant);
+//        	            } else {
+//        	                return ResponseEntity.badRequest().body("Login failed");
+//        	            }
+//        	        } catch (BadCredentialsException e) {
+//        	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username");
+//        	        } catch (Exception e) {
+//        	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
+//        	        }
+//   	    }
+ 
+	    private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
 	    	try {
 	    		if (regsiterService.isGoogleSignIn(loginDTO)) {
 	                // Handle Google sign-in separately
@@ -145,20 +181,6 @@ private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  App
 	    @PostMapping("/applicantsendotp")
 	    public ResponseEntity<String> sendOtp(@RequestBody Applicant  request) {
 	    	String userEmail = request.getEmail();
-	    	System.out.println(request.getMobilenumber());
-	    	if (applicantRepository.existsByEmail(request.getEmail())) {
-	            return ResponseEntity.ok("Email already registered as applicant");
-	         }
-	     	if(recruiterRepository.existsByEmail(request.getEmail())) {
-	     		return ResponseEntity.ok("Email already registered recruiter");
-	     	}
-	     	 if(applicantRepository.existsByMobilenumber(request.getMobilenumber()))
-	            {
-	     		return ResponseEntity.ok("Mobile number already existed in applicant");
-	            }
-	     	 if(recruiterRepository.existsByMobilenumber(request.getMobilenumber())) {
-	     		return ResponseEntity.ok("Mobile number already existed in recruiter");
-	     	 }
 	        try {
 	            Applicant applicant = regsiterService.findByEmail(userEmail);
 	            if (applicant == null) {
@@ -188,14 +210,14 @@ private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  App
 	 	            return ResponseEntity.ok("OTP sent successfully");
 	        }
 	        else {
-	        	 return ResponseEntity.badRequest().body("Email not found."); 
-	        } 
+	        	 return ResponseEntity.badRequest().body("Email not found.");
+	        }
 	    }
  
 	    @PostMapping("/applicantverify-otp")
 	    public ResponseEntity<String> verifyOtp( @RequestBody  OtpVerificationRequest verificationRequest
  
-	    ) 
+	    )
 	    {
 	    	try {
 	            String otp = verificationRequest.getOtp();
@@ -220,17 +242,21 @@ private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  App
 	    	try {
 	            String newpassword = request.getPassword();
 	            String confirmedPassword = request.getConfirmedPassword();
+	            	
 	            if (email == null) {
 	                  throw new CustomException("Email not found.", HttpStatus.BAD_REQUEST);
 	            }
+	           
 	            Applicant applicant = regsiterService.findByEmail(email);
 	                if (applicant == null) {
 	                 throw new CustomException("User not found.", HttpStatus.BAD_REQUEST);
 	            }
+	            	
 	            applicant.setPassword(passwordEncoder.encode(newpassword));
 	           regsiterService.addApplicant(applicant);
 	               return ResponseEntity.ok("Password reset was done successfully");
 	        } catch (CustomException e) {
+	        	
 	            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
 	        } catch (Exception e) {
 	        	System.out.println(e.getMessage());
@@ -262,6 +288,7 @@ private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  App
  
 		public void setOtpService(OtpService otpService2) {
 			otpService=otpService2;
+			
 		}
 		@PostMapping("/authenticateUsers/{id}")
 	    public String authenticateUser(@PathVariable Long id, @RequestBody PasswordRequest passwordRequest) {
@@ -269,4 +296,5 @@ private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  App
 	        String oldpassword = passwordRequest.getOldpassword();
 	        return regsiterService.authenticateUser(id, oldpassword, newpassword);
 	    }
+		
 }
