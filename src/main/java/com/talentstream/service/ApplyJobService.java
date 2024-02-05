@@ -52,13 +52,18 @@ public class ApplyJobService {
 	    private JavaMailSender javaMailSender;
 	    @Autowired
 	    private AlertsRepository alertsRepository;
+	@Autowired
+	    private JobRecruiterRepository jobRecruiterRepository;
 public String ApplicantApplyJob(long  applicantId, long jobId) {
+	    	
 	    	try {
 	            Applicant applicant = applicantRepository.findById(applicantId);
 	            Job job = jobRepository.findById(jobId).orElse(null);
+ 
 	            if (applicant == null || job == null) {
 	                throw new CustomException("Applicant ID or Job ID not found", HttpStatus.NOT_FOUND);
 	            }
+ 
 	            else{
 	            	if (applyJobRepository.existsByApplicantAndJob(applicant, job)) {
 	                       	return "Job has already been applied by the applicant";
@@ -67,20 +72,30 @@ public String ApplicantApplyJob(long  applicantId, long jobId) {
 	    	            applyJob.setApplicant(applicant);
 	    	            applyJob.setJob(job);
 	    	            applyJobRepository.save(applyJob);
+	    	            
 	    	            job.setJobStatus("Already Applied");
+	    	            job.setAlertCount(job.getAlertCount()+1);
+	    	            job.setRecentApplicationDateTime(LocalDateTime.now());
 	    				jobRepository.save(job);
+	    	            
 	    	            // Increment alert count
 	    		        incrementAlertCount(applyJob.getApplicant());
+	    		        
 	    		        //SaveStatusHistory
 	    	            saveStatusHistory(applyJob, applyJob.getApplicantStatus());
 	    	            Job jobs=applyJob.getJob();
 	    	            if(jobs!=null) {
 	    	            	JobRecruiter recruiter=jobs.getJobRecruiter();
+	    	            	
+	    	            	
 	    	            	if(recruiter!=null) {
 	    	            		String companyName=recruiter.getCompanyname();
 	    	            		if(companyName!=null) {
 	    	            			String cN=recruiter.getCompanyname();
+	    	            			   
 	    	            			String jobTitle = jobs.getJobTitle();
+	    	            			recruiter.setAlertCount(recruiter.getAlertCount()+1);
+	    	            			jobRecruiterRepository.save(recruiter);
 	    	            			sendAlerts(applyJob,applyJob.getApplicantStatus(),cN,jobTitle);
 	    	            			return "Job applied successfully";
 	    	            		}
