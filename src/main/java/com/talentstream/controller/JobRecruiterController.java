@@ -1,5 +1,7 @@
 package com.talentstream.controller;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import com.talentstream.entity.ResetPasswordRequest;
 import com.talentstream.exception.CustomException;
 import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
+import com.talentstream.repository.JobRepository;
 import com.talentstream.service.EmailService;
 import com.talentstream.service.JobRecruiterService;
 import org.slf4j.Logger;
@@ -49,6 +52,9 @@ public class JobRecruiterController {
      MyUserDetailsService myUserDetailsService;
      @Autowired
 	private JobRecruiterRepository recruiterRepository;
+
+	 @Autowired
+     private JobRepository jobRepository;
  
 	 @Autowired
 	RegisterRepository applicantRepository;
@@ -162,4 +168,56 @@ public class JobRecruiterController {
         String oldpassword = passwordRequest.getOldpassword();
         return recruiterService.authenticateRecruiter(id, oldpassword, newpassword);
     }
+
+	@GetMapping("/appledjobs/{recruiterId}/unread-alert-count")
+  public ResponseEntity<Integer> getUnreadAlertCount(@PathVariable long recruiterId) {
+	    try {
+	        JobRecruiter recruiter = recruiterRepository.findByRecruiterId(recruiterId);
+	        if (recruiter != null) {
+	            int unreadAlertCount = recruiter.getAlertCount();
+//	            recruiter.setAlertCount(0);
+//	            recruiterRepository.save(recruiter);
+	            return ResponseEntity.ok(unreadAlertCount);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
+	}
+  @GetMapping("/job-alerts/{recruiterId}")
+  public ResponseEntity<List<Job>> getAlerts(@PathVariable long recruiterId) {
+      try {
+          LocalDateTime minDateTime = LocalDateTime.now().minusDays(7); // Filter jobs from the last 7 days
+          List<Job> notifications = jobRepository.findJobsWithAlertCountAndRecentDateTimeGreaterThan(minDateTime);
+
+          // Sort notifications based on recentApplicationDateTime in descending order
+          Collections.sort(notifications, (job1, job2) -> {
+              LocalDateTime dateTime1 = job1.getRecentApplicationDateTime();
+              LocalDateTime dateTime2 = job2.getRecentApplicationDateTime();
+
+              if (dateTime1 == null && dateTime2 == null) {
+                  return 0;
+              } else if (dateTime1 == null) {
+                  return 1;
+              } else if (dateTime2 == null) {
+                  return -1;
+              }
+
+              // Compare in descending order
+              return dateTime2.compareTo(dateTime1);
+          });
+
+          // Reset alert count for the recruiter
+          JobRecruiter recruiter = recruiterRepository.findByRecruiterId(recruiterId);
+          recruiter.setAlertCount(0);
+          recruiterRepository.save(recruiter);
+
+          return ResponseEntity.ok(notifications);
+      } catch (EntityNotFoundException e) {
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+      }
+  }
 }
