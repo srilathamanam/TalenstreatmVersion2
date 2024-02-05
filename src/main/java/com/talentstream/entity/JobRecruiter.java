@@ -160,10 +160,24 @@ public class JobRecruiter {
     @OneToMany( cascade = CascadeType.ALL)
     @JsonIgnore
     private List<TeamMember> teamMembers; 
+	
     public JobRecruiter() {
         // Default constructor
     }
- 
+
+	@Column(columnDefinition = "int default 0")
+    private int alertCount;
+    
+    
+    
+    public int getAlertCount() {
+		return alertCount;
+	}
+
+
+	public void setAlertCount(int alertCount) {
+		this.alertCount = alertCount;
+	}
   
     public Long getRecruiterId() {
         return recruiterId;
