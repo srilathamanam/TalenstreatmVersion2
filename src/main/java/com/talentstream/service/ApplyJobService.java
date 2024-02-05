@@ -30,6 +30,7 @@ import com.talentstream.repository.AlertsRepository;
 import com.talentstream.repository.ApplicantStatusHistoryRepository;
 import com.talentstream.repository.ApplyJobRepository;
 import com.talentstream.repository.JobRepository;
+import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.repository.ScheduleInterviewRepository; 
 import jakarta.persistence.EntityNotFoundException;
