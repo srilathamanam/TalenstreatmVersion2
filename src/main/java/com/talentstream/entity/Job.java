@@ -1,6 +1,7 @@
 package com.talentstream.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -134,6 +135,31 @@ public class Job {
 
 	@Column(nullable = false)
     private String status = "active"; // New field with a default value of "active"
+
+	@Column(columnDefinition = "int default 0")
+    private int alertCount;
+
+@Column(name = "recent_application_date_time")
+	@CreationTimestamp
+    private LocalDateTime recentApplicationDateTime;
+
+
+public LocalDateTime getRecentApplicationDateTime() {
+		return recentApplicationDateTime;
+	}
+
+	public void setRecentApplicationDateTime(LocalDateTime recentApplicationDateTime) {
+		this.recentApplicationDateTime = recentApplicationDateTime;
+	}
+
+
+public int getAlertCount() {
+		return alertCount;
+	}
+
+	public void setAlertCount(int alertCount) {
+		this.alertCount = alertCount;
+	}
     public String getStatus() {
         return status;
     }
