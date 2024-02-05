@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.talentstream.service.JwtUtil;
+import com.talentstream.entity.Job;
 import com.talentstream.service.MyUserDetailsService;
 import com.talentstream.service.OtpService;
 import com.talentstream.response.ResponseHandler;
