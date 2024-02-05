@@ -222,4 +222,33 @@ public class JobController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
         }
     }
+
+	@GetMapping("/{jobId}/{recruiterId}")
+    public ResponseEntity<?> getJobById(@PathVariable Long jobId,@PathVariable Long recruiterId) {
+        try {
+            Job job = jobService.getJobById(jobId);
+ 
+            if (job != null) {
+                JobDTO jobDTO = modelMapper.map(job, JobDTO.class);
+                return ResponseEntity.ok(jobDTO);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (CustomException ce) {
+            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+        }
+    }
+
+	@PutMapping("/editJob/{jobId}/{recruiterId}")
+    public ResponseEntity<String> editJob(@RequestBody @Valid JobDTO jobDTO, @PathVariable Long jobId,@PathVariable Long recruiterId) {
+        try {
+            return jobService.editJob(jobDTO, jobId);
+        } catch (CustomException ce) {
+            return ResponseEntity.status(ce.getStatus()).body(ce.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
+        }
+    }
 }
