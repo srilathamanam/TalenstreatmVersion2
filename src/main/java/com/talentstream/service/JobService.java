@@ -173,5 +173,42 @@ public class JobService {
 	            throw new CustomException("Job not found",HttpStatus.NOT_FOUND);
 	        }
 	    }
-	
+	public ResponseEntity<String> editJob(JobDTO jobDTO, Long jobId) {
+	        Optional<Job> existingJobOptional = jobRepository.findById(jobId);
+ 
+	        if (existingJobOptional.isPresent()) {
+	            Job existingJob = existingJobOptional.get();
+ 
+	            // Update the job details with the new values from jobDTO
+	            existingJob.setJobTitle(jobDTO.getJobTitle());
+	            existingJob.setMinimumExperience(jobDTO.getMinimumExperience());
+	            existingJob.setMaximumExperience(jobDTO.getMaximumExperience());
+	            existingJob.setMinSalary(jobDTO.getMinSalary());
+	            existingJob.setMaxSalary(jobDTO.getMaxSalary());
+	            existingJob.setLocation(jobDTO.getLocation());
+	            existingJob.setEmployeeType(jobDTO.getEmployeeType());
+	            existingJob.setIndustryType(jobDTO.getIndustryType());
+	            existingJob.setMinimumQualification(jobDTO.getMinimumQualification());
+	            existingJob.setSpecialization(jobDTO.getSpecialization());
+	            existingJob.setJobHighlights(jobDTO.getJobHighlights());
+	            existingJob.setDescription(jobDTO.getDescription());
+	            existingJob.setSaveJobStatus(jobDTO.getSaveJobStatus());
+ 
+	            // Update skillsRequired - Assuming jobDTO has a similar structure as Job
+	            Set<RecuriterSkills> updatedSkills = new HashSet<>();
+	            for (RecuriterSkillsDTO skillDTO : jobDTO.getSkillsRequired()) {
+	                RecuriterSkills skill = new RecuriterSkills();
+	                skill.setSkillName(skillDTO.getSkillName());
+	                skill.setMinimumExperience(skillDTO.getMinimumExperience());
+	                updatedSkills.add(skill);
+	            }
+	            existingJob.setSkillsRequired(updatedSkills);
+ 
+	            jobRepository.save(existingJob);
+ 
+	            return ResponseEntity.ok("Job updated successfully.");
+	        } else {
+	            throw new CustomException("Job not found", HttpStatus.NOT_FOUND);
+	        }
+	    }
 }
