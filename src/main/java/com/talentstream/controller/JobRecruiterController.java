@@ -191,7 +191,7 @@ public class JobRecruiterController {
   public ResponseEntity<List<Job>> getAlerts(@PathVariable long recruiterId) {
       try {
           LocalDateTime minDateTime = LocalDateTime.now().minusDays(7); // Filter jobs from the last 7 days
-          List<Job> notifications = jobRepository.findJobsWithAlertCountAndRecentDateTimeGreaterThan(minDateTime);
+          List<Job> notifications = jobRepository.findJobsWithAlertCountAndRecentDateTimeGreaterThanAndRecruiterId(minDateTime,recruiterId);
 
           // Sort notifications based on recentApplicationDateTime in descending order
           Collections.sort(notifications, (job1, job2) -> {
