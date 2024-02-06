@@ -91,6 +91,14 @@ public class ApplicantProfileController {
                return ResponseEntity.notFound().build();
            }
        }
-       
+       @GetMapping("/{applicantId}/profile-view1")
+       public ResponseEntity<ApplicantProfileViewDTO> getApplicantProfileViewDTO1(@PathVariable long applicantId) {
+           try {
+               ApplicantProfileViewDTO dto = applicantProfileService.getApplicantProfileViewDTO(applicantId);
+               return ResponseEntity.ok(dto);
+           } catch (EntityNotFoundException e) {
+               return ResponseEntity.notFound().build();
+           }
+       }
       
 }
