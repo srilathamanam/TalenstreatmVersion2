@@ -280,6 +280,7 @@ private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantIn
 	 AppliedApplicantInfoDTO dto = new AppliedApplicantInfoDTO();
 	    dto.setApplyjobid(appliedApplicantInfo.getApplyjobid());
 	    dto.setName(appliedApplicantInfo.getName());
+	    dto.setId(appliedApplicantInfo.getId());
 	    dto.setEmail(appliedApplicantInfo.getEmail());
 	    dto.setMobilenumber(appliedApplicantInfo.getMobilenumber());
 	    dto.setJobTitle(appliedApplicantInfo.getJobTitle());
