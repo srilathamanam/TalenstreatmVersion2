@@ -54,10 +54,11 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 	@Query("SELECT DISTINCT j FROM Job j JOIN j.skillsRequired s WHERE s.skillName = :skillName")
     Page<Job> findJobsBySkillName(String skillName, Pageable pageable);
 
-	@Query("SELECT j FROM Job j WHERE j.alertCount > 0 AND j.recentApplicationDateTime >= :minDateTime")
-    List<Job> findJobsWithAlertCountAndRecentDateTimeGreaterThan(
-        @Param("minDateTime") LocalDateTime minDateTime
-    );
+	@Query("SELECT j FROM Job j WHERE j.alertCount > 0 AND j.recentApplicationDateTime >= :minDateTime AND j.jobRecruiter.recruiterId = :recruiterId")
+	List<Job> findJobsWithAlertCountAndRecentDateTimeGreaterThanAndRecruiterId(
+	    @Param("minDateTime") LocalDateTime minDateTime,
+	    @Param("recruiterId") Long recruiterId
+	);
 
 	
 }
