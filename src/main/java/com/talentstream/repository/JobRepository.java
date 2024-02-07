@@ -45,7 +45,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 	 List<Job> findBySkillsRequiredIgnoreCaseAndSkillNameIn(Set<String> skillNames);
 	@Query("SELECT j FROM Job j WHERE j.jobRecruiter.id = :jobRecruiterId")
     List<Job> findByJobRecruiterId(@Param("jobRecruiterId") Long jobRecruiterId);
-	@Query("SELECT COUNT(j) FROM Job j WHERE j.jobRecruiter.id = :recruiterId")
+	@Query("SELECT COUNT(j) FROM Job j WHERE j.jobRecruiter.id = :recruiterId AND j.status = 'active'")
     long countJobsByRecruiterId(@Param("recruiterId") Long recruiterId);
 	
 	@Query("SELECT j FROM Job j JOIN j.skillsRequired s WHERE LOWER(s.skillName) LIKE LOWER(CONCAT('%', :skillName, '%'))")
