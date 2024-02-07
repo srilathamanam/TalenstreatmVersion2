@@ -44,6 +44,11 @@ public class FinRecommendedJobService {
 
                       List<Job> matchingJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
 
+		// Filter the matching jobs by status
+            matchingJobs = matchingJobs.stream()
+                    .filter(job -> job.getStatus().equalsIgnoreCase("active")) // Assuming status is stored as a String
+                    .collect(Collectors.toList());
+            
             return matchingJobs;
         } catch (Exception e) {           
             throw new CustomException("Error while finding recommended jobs", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,6 +72,10 @@ public class FinRecommendedJobService {
 
             List<Job> recommendedJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
 
+		// Filter the matching jobs by status
+            recommendedJobs = recommendedJobs.stream()
+                    .filter(job -> job.getStatus().equalsIgnoreCase("active")) // Assuming status is stored as a String
+                    .collect(Collectors.toList());
             return recommendedJobs.size();
         } catch (Exception e) {
         	 e.printStackTrace(); 
