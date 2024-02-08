@@ -36,10 +36,10 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 		       "INNER JOIN aj.job j " +
 		       "INNER JOIN j.skillsRequired s " +
 		       "INNER JOIN j.jobRecruiter r " +
-		       "WHERE r.id = :jobRecruiterId AND j.id = :id")
+		       "WHERE r.id = :jobRecruiterId AND j.id = :jobId")
 		List<AppliedApplicantInfo> findAppliedApplicantsInfoWithJobId(
 		    @Param("jobRecruiterId") long jobRecruiterId,
-		    @Param("jobId") long id
+		    @Param("jobId") long jobId
 		);
 	boolean existsByApplicantAndJob(Applicant applicant, Job job);	
 	@Query("SELECT COUNT(ja) FROM ApplyJob ja WHERE ja.job.jobRecruiter.id = :recruiterId")
