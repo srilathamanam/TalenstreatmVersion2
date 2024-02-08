@@ -276,8 +276,8 @@ public long countAppliedJobsForApplicant(long applicantId) {
 	    return applicantMap;
 	}
 
-	public Map<String, List<AppliedApplicantInfoDTO>> getAppliedApplicants1(long jobRecruiterId,long jobId) {
-	    List<AppliedApplicantInfo> appliedApplicants = applyJobRepository.findAppliedApplicantsInfoWithJobId(jobRecruiterId, jobId);
+	public Map<String, List<AppliedApplicantInfoDTO>> getAppliedApplicants1(long jobRecruiterId,long id) {
+	    List<AppliedApplicantInfo> appliedApplicants = applyJobRepository.findAppliedApplicantsInfoWithJobId(jobRecruiterId, id);
 	    Map<String, List<AppliedApplicantInfoDTO>> applicantMap = new HashMap<>();
 	    for (AppliedApplicantInfo appliedApplicantInfo : appliedApplicants) {
 	        String applicantKey = appliedApplicantInfo.getEmail() + "_" + appliedApplicantInfo.getApplyjobid();
