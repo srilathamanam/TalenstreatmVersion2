@@ -143,6 +143,19 @@ public class Job {
 	@CreationTimestamp
     private LocalDateTime recentApplicationDateTime;
 
+	@Column(name = "new_status", columnDefinition = "VARCHAR(255) DEFAULT 'oldApplicants'")
+    private String newStatus;
+	
+
+
+public String getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
+	}
+
 
 public LocalDateTime getRecentApplicationDateTime() {
 		return recentApplicationDateTime;
