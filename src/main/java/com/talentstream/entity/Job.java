@@ -156,7 +156,6 @@ public String getNewStatus() {
 		this.newStatus = newStatus;
 	}
 
-
 public LocalDateTime getRecentApplicationDateTime() {
 		return recentApplicationDateTime;
 	}
