@@ -275,6 +275,35 @@ public long countAppliedJobsForApplicant(long applicantId) {
 	    }
 	    return applicantMap;
 	}
+
+	public Map<String, List<AppliedApplicantInfoDTO>> getAppliedApplicants1(long jobRecruiterId,long jobId) {
+	    List<AppliedApplicantInfo> appliedApplicants = applyJobRepository.findAppliedApplicantsInfoWithJobId(jobRecruiterId, jobId);
+	    Map<String, List<AppliedApplicantInfoDTO>> applicantMap = new HashMap<>();
+	    for (AppliedApplicantInfo appliedApplicantInfo : appliedApplicants) {
+	        String applicantKey = appliedApplicantInfo.getEmail() + "_" + appliedApplicantInfo.getApplyjobid();
+	        if (!applicantMap.containsKey(applicantKey)) {
+	            List<AppliedApplicantInfoDTO> dtoList = new ArrayList<>();
+	            dtoList.add(mapToDTO(appliedApplicantInfo));
+	            applicantMap.put(applicantKey, dtoList);
+	        } else {
+	            List<AppliedApplicantInfoDTO> existingDTOList = applicantMap.get(applicantKey);
+	            boolean found = false;
+	            for (AppliedApplicantInfoDTO existingDTO : existingDTOList) {
+	                if (existingDTO.getName().equals(appliedApplicantInfo.getName())) {
+	                    existingDTO.addSkill(appliedApplicantInfo.getSkillName(), appliedApplicantInfo.getMinimumExperience());
+	                    found = true;
+	                    break;
+	                }
+	            }
+	            if (!found) {
+	                AppliedApplicantInfoDTO dto = mapToDTO(appliedApplicantInfo);
+	                existingDTOList.add(dto);
+	            }
+	        }
+	    }
+	    return applicantMap;
+	}
+
  
 private AppliedApplicantInfoDTO mapToDTO(AppliedApplicantInfo appliedApplicantInfo) {
 	 AppliedApplicantInfoDTO dto = new AppliedApplicantInfoDTO();
