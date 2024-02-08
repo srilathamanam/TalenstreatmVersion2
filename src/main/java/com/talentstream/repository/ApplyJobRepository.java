@@ -16,7 +16,7 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 	List<ApplyJob> findByApplicantId(long applicantId);
 
 	@Query("SELECT NEW com.talentstream.entity.AppliedApplicantInfo(" +
-		       " aj.applyjobid,a.name,a.id, a.email, a.mobilenumber, j.jobTitle, aj.applicantStatus, " +
+		       " aj.applyjobid,a.name, a.email, a.mobilenumber, j.jobTitle, aj.applicantStatus, " +
 		       " j.minimumExperience, s.skillName, " +
 		       "j.minimumQualification, j.location) " +
 		       "FROM ApplyJob aj " +
@@ -26,7 +26,7 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 		       "INNER JOIN j.jobRecruiter r " +
 		       "WHERE r.id = :jobRecruiterId")
 		List<AppliedApplicantInfo> findAppliedApplicantsInfo(@Param("jobRecruiterId") long jobRecruiterId);
-
+	
 	@Query("SELECT NEW com.talentstream.entity.AppliedApplicantInfo(" +
 		       " aj.applyjobid, a.name, a.email, a.mobilenumber, j.jobTitle, aj.applicantStatus, " +
 		       " j.minimumExperience, s.skillName, " +
@@ -41,8 +41,6 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 		    @Param("jobRecruiterId") long jobRecruiterId,
 		    @Param("jobId") long jobId
 		);
-
-	
 	boolean existsByApplicantAndJob(Applicant applicant, Job job);	
 	@Query("SELECT COUNT(ja) FROM ApplyJob ja WHERE ja.job.jobRecruiter.id = :recruiterId")
     long countJobApplicantsByRecruiterId(@Param("recruiterId") Long recruiterId);	
