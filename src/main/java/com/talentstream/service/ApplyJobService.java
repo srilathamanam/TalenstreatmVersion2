@@ -77,6 +77,7 @@ public String ApplicantApplyJob(long  applicantId, long jobId) {
 	    	            job.setJobStatus("Already Applied");
 	    	            job.setAlertCount(job.getAlertCount()+1);
 	    	            job.setRecentApplicationDateTime(LocalDateTime.now());
+				job.setNewStatus("newapplicants");
 	    				jobRepository.save(job);
 	    	            
 	    	            // Increment alert count
@@ -300,6 +301,13 @@ public long countAppliedJobsForApplicant(long applicantId) {
 	                existingDTOList.add(dto);
 	            }
 	        }
+	    }
+		Optional<Job> optionalJob = jobRepository.findById(id);
+
+	    if (optionalJob.isPresent()) {
+	        Job job = optionalJob.get();
+	        job.setNewStatus("oldApplicants"); // Set the new status to the job object
+	        jobRepository.save(job); // Save the updated job object
 	    }
 	    return applicantMap;
 	}
