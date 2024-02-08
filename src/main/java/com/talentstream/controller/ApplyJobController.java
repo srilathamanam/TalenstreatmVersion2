@@ -122,10 +122,10 @@ public class ApplyJobController {
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
       }
  }
-	@GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/{jobId}")
- public ResponseEntity<Map<String, List<AppliedApplicantInfoDTO>>> getAppliedApplicantsForRecruiter1(@PathVariable long jobRecruiterId,@PathVariable long jobId) {
+ @GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/{id}")
+ public ResponseEntity<Map<String, List<AppliedApplicantInfoDTO>>> getAppliedApplicantsForRecruiter1(@PathVariable long jobRecruiterId,@PathVariable long id) {
       try {
-          Map<String, List<AppliedApplicantInfoDTO>> appliedApplicantsMap = applyJobService.getAppliedApplicants1(jobRecruiterId,jobId);
+          Map<String, List<AppliedApplicantInfoDTO>> appliedApplicantsMap = applyJobService.getAppliedApplicants1(jobRecruiterId,id);
           return ResponseEntity.ok(appliedApplicantsMap);
       } catch (CustomException e) {
           return ResponseEntity.status(e.getStatus()).body(new HashMap<>());
