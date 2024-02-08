@@ -14,27 +14,43 @@ public class AppliedApplicantInfo {
     private String skillName;
     private String minimumQualification;
     private String location;
+    private String newStatus;
     
  
-    public AppliedApplicantInfo( Long applyjobid,String name,Long id, String email, String mobile, String jobTitle, String applicantStatus, int minimumExperience, String skillName, String minimumQualification, String location) {
-    	this.applyjobid = applyjobid;
-    	
-    	this.name = name;
-    	this.id=id;
+    public AppliedApplicantInfo(Long applyjobid, String name, Long id,String email, String mobile, String newStatus, String jobTitle, String applicantStatus, int minimumExperience, String skillName, String minimumQualification, String location) {
+        this.applyjobid = applyjobid;
+        this.name = name;
+        this.id = id;
         this.email = email;
         this.mobilenumber = mobile;
+        this.newStatus=newStatus;
         this.jobTitle = jobTitle;
         this.applicantStatus = applicantStatus;
-       
         this.minimumExperience = minimumExperience;
         this.skillName = skillName;
         this.minimumQualification = minimumQualification;
         this.location = location;
-      
+        
+        
     }
  
 	
  
+    
+	public String getNewStatus() {
+		return newStatus;
+	}
+
+
+
+
+	public void setNewStatus(String newStatus) {
+		this.newStatus = newStatus;
+	}
+
+
+
+
 	public Long getId() {
 		return id;
 	}
