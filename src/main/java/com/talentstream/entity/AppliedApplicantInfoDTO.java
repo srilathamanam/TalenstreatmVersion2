@@ -15,9 +15,13 @@ public class AppliedApplicantInfoDTO {
 	    private List<String> skillName;
 	    private String minimumQualification;
 	    private String location;
+	    private String newStatus;
+	    
+	    
 
  
-	    public Map<String, Integer> getSkills() {
+	    
+		public Map<String, Integer> getSkills() {
 			return skills;
 		}
 		public void setSkills(Map<String, Integer> skills) {
@@ -94,4 +98,10 @@ public class AppliedApplicantInfoDTO {
 	    public void addSkill(String skillName, int minimumExperience) {
 	        skills.put(skillName, minimumExperience);
 	    }
+	    public String getNewStatus() {
+			return newStatus;
+		}
+		public void setNewStatus(String newStatus) {
+			this.newStatus = newStatus;
+		}
 }	
