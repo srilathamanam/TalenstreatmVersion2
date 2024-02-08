@@ -122,6 +122,18 @@ public class ApplyJobController {
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
       }
  }
+	@GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/{jobId}")
+ public ResponseEntity<Map<String, List<AppliedApplicantInfoDTO>>> getAppliedApplicantsForRecruiter1(@PathVariable long jobRecruiterId,@PathVariable long jobId) {
+      try {
+          Map<String, List<AppliedApplicantInfoDTO>> appliedApplicantsMap = applyJobService.getAppliedApplicants1(jobRecruiterId,jobId);
+          return ResponseEntity.ok(appliedApplicantsMap);
+      } catch (CustomException e) {
+          return ResponseEntity.status(e.getStatus()).body(new HashMap<>());
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
+      }
+ }
+
  @PostMapping("/scheduleInterview/{applyJobId}")
  public ResponseEntity<Void> createScheduleInterview(
          @PathVariable Long applyJobId,
