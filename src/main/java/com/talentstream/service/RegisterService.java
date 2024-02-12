@@ -147,6 +147,29 @@ public Applicant findById(Long id) {
         throw new CustomException("Error finding applicant by ID", HttpStatus.INTERNAL_SERVER_ERROR);
     }
    }
+
+	public Applicant findByEmail(String userEmail) {
+		try {
+			System.out.println(userEmail);
+            return applicantRepository.findByEmail(userEmail);
+            
+        } catch (Exception e) {
+        	
+            throw new CustomException("Error finding applicant by email", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+ 
+	}
+	
+	public Applicant findByMobilenumber(String userMobile) {
+		try {
+			
+            return applicantRepository.findByMobilenumber(userMobile);
+            
+        } catch (Exception e) {
+        	
+            throw new CustomException("Error finding applicant by Mobile Number", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
  
 public List<Applicant> getAllApplicants() {
 	 try {
