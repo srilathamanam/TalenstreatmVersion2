@@ -35,7 +35,7 @@ public class FindRecommendedJobController {
     public FindRecommendedJobController(FinRecommendedJobService finJobService) {
         this.finJobService = finJobService;
     }
- 
+	
     @GetMapping("/findrecommendedjob/{applicantId}")
     public  ResponseEntity<List<JobDTO>> recommendJobsForApplicant(@PathVariable String applicantId) {
     	try {
@@ -120,5 +120,6 @@ public class FindRecommendedJobController {
     public long countRecommendedJobsForApplicant(@PathVariable long applicantId) {
         return finJobService.countRecommendedJobsForApplicant(applicantId);
     }
+	
 }
  
