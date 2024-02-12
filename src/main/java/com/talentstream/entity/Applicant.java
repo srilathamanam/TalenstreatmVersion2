@@ -53,7 +53,7 @@ private String appicantStatus="Active";
 	public void setAppicantStatus(String appicantStatus) {
 		this.appicantStatus = appicantStatus;
  
-
+	}
 	public long getId() {
 		return id;
 	}
