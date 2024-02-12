@@ -178,18 +178,33 @@ public class RegisterController {
 		}
  
  
-	    @PostMapping("/applicantsendotp")
-	    public ResponseEntity<String> sendOtp(@RequestBody Applicant  request) {
-	    	String userEmail = request.getEmail();
+	   @PostMapping("/applicantsendotp")
+	    public ResponseEntity<String> sendOtp(@RequestBody Applicant request) {
+	        String userEmail = request.getEmail();
+	        String userMobile = request.getMobilenumber();
 	        try {
-	            Applicant applicant = regsiterService.findByEmail(userEmail);
-	            if (applicant == null) {
+	            Applicant applicantByEmail = regsiterService.findByEmail(userEmail);
+	            Applicant applicantByMobile = regsiterService.findByMobilenumber(userMobile);
+	            JobRecruiter recruiterByEmail = findByEmail(userEmail);
+	            JobRecruiter recruiterByMobile = findByMobilenumber(userMobile);
+ 
+	            if (applicantByEmail == null && applicantByMobile == null && recruiterByEmail == null && recruiterByMobile == null) {
 	                String otp = otpService.generateOtp(userEmail);
 	                emailService.sendOtpEmail(userEmail, otp);
 	                otpVerificationMap.put(userEmail, true);
 	                return ResponseEntity.ok("OTP sent to your email.");
 	            } else {
-	                throw new CustomException("Email is already registered.", null);
+	                if (applicantByEmail != null) {
+	                    throw new CustomException("Email is already registered as an Applicant.", null);
+	                } else if (recruiterByEmail != null) {
+	                    throw new CustomException("Email is already registered as a Recruiter.", null);
+	                } else if (applicantByMobile != null) {
+	                    throw new CustomException("Mobile number is already registered as an Applicant.", null);
+	                } else if (recruiterByMobile != null) {
+	                    throw new CustomException("Mobile number is already registered as a Recruiter.", null);
+	                } else {
+	                    throw new CustomException("Email or mobile number is already registered.", null);
+	                }
 	            }
 	        } catch (CustomException e) {
 	            return ResponseEntity.badRequest().body(e.getMessage());
@@ -296,5 +311,27 @@ public class RegisterController {
 	        String oldpassword = passwordRequest.getOldpassword();
 	        return regsiterService.authenticateUser(id, oldpassword, newpassword);
 	    }
+	public JobRecruiter findByEmail(String userEmail) {
+			try {
+				System.out.println(userEmail);
+	            return recruiterRepository.findByEmail(userEmail);
+	            
+	        } catch (Exception e) {
+	        	
+	            throw new CustomException("Error finding applicant by email", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	
+		}
+	    
+	    public JobRecruiter findByMobilenumber(String userMobile) {
+			try {
+				
+	            return recruiterRepository.findByMobilenumber(userMobile);
+	            
+	        } catch (Exception e) {
+	        	
+	            throw new CustomException("Error finding applicant by Mobile Number", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+		}
 		
 }
