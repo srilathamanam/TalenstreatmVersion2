@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.talentstream.entity.Applicant;
 import com.talentstream.entity.ApplicantProfile;
 import com.talentstream.entity.ApplicantSkills;
 import com.talentstream.entity.Job;
