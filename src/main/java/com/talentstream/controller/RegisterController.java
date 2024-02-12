@@ -27,6 +27,7 @@ import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
 import com.talentstream.entity.PasswordRequest;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.response.ResponseHandler;
 import com.talentstream.service.EmailService;
