@@ -49,6 +49,9 @@ public class RegisterController {
 	    private OtpService otpService;
 	 @Autowired
 	 private RegisterRepository registerrepo;
+
+	@Autowired
+	 private JobRecruiterRepository recruiterRepository;
 	
 	
 		 private Map<String, Boolean> otpVerificationMap = new HashMap<>();
