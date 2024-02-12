@@ -32,19 +32,19 @@ public class FinRecommendedJobService {
     public List<Job> findJobsMatchingApplicantSkills(long applicantId) {
     	try {
             ApplicantProfile applicantProfile = applicantRepository.findByApplicantId(applicantId);
-
-            if (applicantProfile == null) {
+            Applicant applicant = registerRepository.findById(applicantId);
+            if (applicantProfile == null || !applicant.getAppicantStatus().equalsIgnoreCase("active")) {
                 return Collections.emptyList();
             }
-
+ 
             Set<ApplicantSkills> applicantSkills = applicantProfile.getSkillsRequired();
             Set<String> lowercaseApplicantSkillNames = applicantSkills.stream()
                     .map(skill -> skill.getSkillName().toLowerCase())
                     .collect(Collectors.toSet());
-
-                      List<Job> matchingJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
-
-		// Filter the matching jobs by status
+ 
+            List<Job> matchingJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
+                      
+         // Filter the matching jobs by status
             matchingJobs = matchingJobs.stream()
                     .filter(job -> job.getStatus().equalsIgnoreCase("active")) // Assuming status is stored as a String
                     .collect(Collectors.toList());
@@ -55,34 +55,36 @@ public class FinRecommendedJobService {
         }
     }
     
-    public long countRecommendedJobsForApplicant(long applicantId) {
+   public long countRecommendedJobsForApplicant(long applicantId) {
         try {
         	Optional<ApplicantProfile> optionalApplicant = applicantRepository.findByApplicantIdWithSkills(applicantId);
-
-            if (optionalApplicant.isEmpty()) {
+        	Applicant applicant1 = registerRepository.findById(applicantId);
+            if (optionalApplicant.isEmpty() || !applicant1.getAppicantStatus().equalsIgnoreCase("active")) {
                 // Return a specific indicator, for example, -1 to signify that the applicant is not found
                 return 0;
             }
-
+ 
             ApplicantProfile applicant = optionalApplicant.get();
-
+ 
             Set<String> lowercaseApplicantSkillNames = applicant.getSkillsRequired().stream()
                     .map(skill -> skill.getSkillName().toLowerCase())
                     .collect(Collectors.toSet());
-
+ 
             List<Job> recommendedJobs = jobRepository.findBySkillsRequiredIgnoreCaseAndSkillNameIn(lowercaseApplicantSkillNames);
-
-		// Filter the matching jobs by status
+            
+         // Filter the matching jobs by status
             recommendedJobs = recommendedJobs.stream()
                     .filter(job -> job.getStatus().equalsIgnoreCase("active")) // Assuming status is stored as a String
                     .collect(Collectors.toList());
+            
             return recommendedJobs.size();
         } catch (Exception e) {
-        	 e.printStackTrace(); 
+        	 e.printStackTrace();
             // Handle exceptions as needed
             throw new CustomException("Error while counting recommended jobs for the applicant", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
 
 
