@@ -14,6 +14,7 @@ import com.talentstream.entity.Job;
 import com.talentstream.repository.ApplicantProfileRepository;
 import com.talentstream.repository.JobRepository;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.RegisterRepository;
 
 @Service
 public class FinRecommendedJobService {
