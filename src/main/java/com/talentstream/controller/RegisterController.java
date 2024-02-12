@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import com.talentstream.dto.RegistrationDTO;
 import com.talentstream.entity.Applicant;
 import com.talentstream.entity.AuthenticationResponse;
+import com.talentstream.entity.JobRecruiter;
 import com.talentstream.entity.Login;
 import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
