@@ -44,6 +44,16 @@ public class Applicant {
     @Column(columnDefinition = "int default 0")
     private int alertCount;
 
+private String appicantStatus="Active";
+    
+    public String getAppicantStatus() {
+		return appicantStatus;
+	}
+ 
+	public void setAppicantStatus(String appicantStatus) {
+		this.appicantStatus = appicantStatus;
+ 
+
 	public long getId() {
 		return id;
 	}
