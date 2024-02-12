@@ -150,6 +150,31 @@ public class RegisterController {
 //        	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
 //        	        }
 //   	    }
+
+	@PostMapping("/changeStatus/{id}")
+	    public ResponseEntity<String> changeApplicantStatus(@PathVariable long id){
+	    	//create service layer method
+	    	//based on id fetch applicant
+	    	//if the applicant status is active change it to inactive viceversa
+	    	//return successfully status changed
+	    	try {
+	    		// Fetch the applicant by id
+		    	Applicant applicant=regsiterService.findById(id);
+		    	
+		    	// Toggle the status
+	            if (applicant.getAppicantStatus().equalsIgnoreCase("active")) {
+	                applicant.setAppicantStatus("inactive");
+	            } else {
+	                applicant.setAppicantStatus("active");
+	            }
+	            
+	            // Save the updated applicant
+	            registerrepo.save(applicant);
+		    	return ResponseEntity.ok("Applicant status changed successfully.");
+	    	}catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while changing applicant status.");
+	        }
+	    }
  
 	    private ResponseEntity<Object> createAuthenticationToken(LoginDTO loginDTO,  Applicant applicant ) throws Exception {
 	    	try {
