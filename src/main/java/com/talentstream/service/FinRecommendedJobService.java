@@ -23,12 +23,11 @@ public class FinRecommendedJobService {
 
     @Autowired
     private ApplicantProfileRepository applicantRepository;
-    
-    @Autowired
-    public FinRecommendedJobService(JobRepository jobRepository, ApplicantProfileRepository applicantRepository) {
-        this.jobRepository = jobRepository;
-        this.applicantRepository = applicantRepository;
-    }
+
+	@Autowired
+    private RegisterRepository registerRepository;
+	
+
     public List<Job> findJobsMatchingApplicantSkills(long applicantId) {
     	try {
             ApplicantProfile applicantProfile = applicantRepository.findByApplicantId(applicantId);
