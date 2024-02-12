@@ -197,17 +197,7 @@ public void updatePassword(String userEmail, String newPassword) {
  
 }
  
-	public Applicant findByEmail(String userEmail) {
-		try {
-			System.out.println(userEmail);
-            return applicantRepository.findByEmail(userEmail);
-            
-        } catch (Exception e) {
-        	
-            throw new CustomException("Error finding applicant by email", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
- 
-	}
+	
  
 	
  
