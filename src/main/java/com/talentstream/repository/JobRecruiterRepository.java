@@ -16,4 +16,6 @@ public interface JobRecruiterRepository extends JpaRepository<JobRecruiter, Long
 	JobRecruiter findByRecruiterId(Long id);
  
 	boolean existsByMobilenumber(String mobilenumber);
+
+	JobRecruiter findByMobilenumber(String userMobile);
 }

@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 import com.talentstream.dto.RegistrationDTO;
 import com.talentstream.entity.Applicant;
 import com.talentstream.entity.AuthenticationResponse;
+import com.talentstream.entity.JobRecruiter;
 import com.talentstream.entity.Login;
 import com.talentstream.entity.NewPasswordRequest;
 import com.talentstream.entity.OtpVerificationRequest;
 import com.talentstream.entity.PasswordRequest;
 import com.talentstream.exception.CustomException;
+import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.response.ResponseHandler;
 import com.talentstream.service.EmailService;
@@ -49,7 +51,8 @@ public class RegisterController {
 	    private OtpService otpService;
 	 @Autowired
 	 private RegisterRepository registerrepo;
-	
+	@Autowired
+	 private JobRecruiterRepository recruiterRepository;
 	
 		 private Map<String, Boolean> otpVerificationMap = new HashMap<>();
 		 private static final Logger logger = LoggerFactory.getLogger(ApplicantProfileController.class);
@@ -74,7 +77,32 @@ public class RegisterController {
 	        this.regsiterService = regsiterService;	     
  
 	    }
- 
+	    
+	    @PostMapping("/changeStatus/{id}")
+	    public ResponseEntity<String> changeApplicantStatus(@PathVariable long id){
+	    	//create service layer method
+	    	//based on id fetch applicant
+	    	//if the applicant status is active change it to inactive viceversa
+	    	//return successfully status changed
+	    	try {
+	    		// Fetch the applicant by id
+		    	Applicant applicant=regsiterService.findById(id);
+		    	
+		    	// Toggle the status
+	            if (applicant.getAppicantStatus().equalsIgnoreCase("active")) {
+	                applicant.setAppicantStatus("inactive");
+	            } else {
+	                applicant.setAppicantStatus("active");
+	            }
+	            
+	            // Save the updated applicant
+	            registerrepo.save(applicant);
+		    	return ResponseEntity.ok("Applicant status changed successfully.");
+	    	}catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while changing applicant status.");
+	        }
+	    }
+	    
 	    @PostMapping("/saveApplicant")
 	    public ResponseEntity<String> register(@RequestBody RegistrationDTO registrationDTO) {
 	    	try {
@@ -178,18 +206,55 @@ public class RegisterController {
 		}
  
  
+//	    @PostMapping("/applicantsendotp")
+//	    public ResponseEntity<String> sendOtp(@RequestBody Applicant  request) {
+//	    	String userEmail = request.getEmail();
+//	    	String userMobile=request.getMobilenumber();
+//	        try {
+//	            Applicant applicant = regsiterService.findByEmail(userEmail);
+//	            JobRecruiter recruiter=findByEmail(userEmail);
+//	            if (applicant == null && recruiter == null) {
+//	                String otp = otpService.generateOtp(userEmail);
+//	                emailService.sendOtpEmail(userEmail, otp);
+//	                otpVerificationMap.put(userEmail, true);
+//	                return ResponseEntity.ok("OTP sent to your email.");
+//	            } else {
+//	                throw new CustomException("Email is already registered.", null);
+//	            }
+//	        } catch (CustomException e) {
+//	            return ResponseEntity.badRequest().body(e.getMessage());
+//	        } catch (Exception e) {
+//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending OTP");
+//	        }
+//	    }
+	    
 	    @PostMapping("/applicantsendotp")
-	    public ResponseEntity<String> sendOtp(@RequestBody Applicant  request) {
-	    	String userEmail = request.getEmail();
+	    public ResponseEntity<String> sendOtp(@RequestBody Applicant request) {
+	        String userEmail = request.getEmail();
+	        String userMobile = request.getMobilenumber();
 	        try {
-	            Applicant applicant = regsiterService.findByEmail(userEmail);
-	            if (applicant == null) {
+	            Applicant applicantByEmail = regsiterService.findByEmail(userEmail);
+	            Applicant applicantByMobile = regsiterService.findByMobilenumber(userMobile);
+	            JobRecruiter recruiterByEmail = findByEmail(userEmail);
+	            JobRecruiter recruiterByMobile = findByMobilenumber(userMobile);
+
+	            if (applicantByEmail == null && applicantByMobile == null && recruiterByEmail == null && recruiterByMobile == null) {
 	                String otp = otpService.generateOtp(userEmail);
 	                emailService.sendOtpEmail(userEmail, otp);
 	                otpVerificationMap.put(userEmail, true);
 	                return ResponseEntity.ok("OTP sent to your email.");
 	            } else {
-	                throw new CustomException("Email is already registered.", null);
+	                if (applicantByEmail != null) {
+	                    throw new CustomException("Email is already registered as an Applicant.", null);
+	                } else if (recruiterByEmail != null) {
+	                    throw new CustomException("Email is already registered as a Recruiter.", null);
+	                } else if (applicantByMobile != null) {
+	                    throw new CustomException("Mobile number is already registered as an Applicant.", null);
+	                } else if (recruiterByMobile != null) {
+	                    throw new CustomException("Mobile number is already registered as a Recruiter.", null);
+	                } else {
+	                    throw new CustomException("Email or mobile number is already registered.", null);
+	                }
 	            }
 	        } catch (CustomException e) {
 	            return ResponseEntity.badRequest().body(e.getMessage());
@@ -197,6 +262,31 @@ public class RegisterController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending OTP");
 	        }
 	    }
+
+	    
+	    public JobRecruiter findByEmail(String userEmail) {
+			try {
+				System.out.println(userEmail);
+	            return recruiterRepository.findByEmail(userEmail);
+	            
+	        } catch (Exception e) {
+	        	
+	            throw new CustomException("Error finding applicant by email", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	 
+		}
+	    
+	    public JobRecruiter findByMobilenumber(String userMobile) {
+			try {
+				
+	            return recruiterRepository.findByMobilenumber(userMobile);
+	            
+	        } catch (Exception e) {
+	        	
+	            throw new CustomException("Error finding applicant by Mobile Number", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+		}
+	    
 	    @PostMapping("/forgotpasswordsendotp")
 	    public ResponseEntity<String> ForgotsendOtp(@RequestBody Applicant  request) {
 	    	String userEmail = request.getEmail();

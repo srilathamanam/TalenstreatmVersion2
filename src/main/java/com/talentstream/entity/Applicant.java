@@ -41,7 +41,16 @@ public class Applicant {
     @Column(nullable = false)
     private String roles="ROLE_JOBAPPLICANT";
     
-    @Column(columnDefinition = "int default 0")
+    private String appicantStatus="Active";
+    
+    public String getAppicantStatus() {
+		return appicantStatus;
+	}
+
+	public void setAppicantStatus(String appicantStatus) {
+		this.appicantStatus = appicantStatus;
+	}
+	@Column(columnDefinition = "int default 0")
     private int alertCount;
 
 	public long getId() {

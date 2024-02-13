@@ -8,8 +8,15 @@ public class RegistrationDTO {
 	    private String email;
 	    private String mobilenumber;
 	    private String password;
+	    private String appicantStatus="Active";
 	
-public String getName() {
+	    public String getAppicantStatus() {
+			return appicantStatus;
+		}
+		public void setAppicantStatus(String appicantStatus) {
+			this.appicantStatus = appicantStatus;
+		}
+		public String getName() {
 			return name;
 		}
 		public void setName(String name) {

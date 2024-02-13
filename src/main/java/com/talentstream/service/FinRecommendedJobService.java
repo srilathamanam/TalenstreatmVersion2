@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import com.talentstream.entity.Applicant;
 import com.talentstream.entity.ApplicantProfile;
 import com.talentstream.entity.ApplicantSkills;
 import com.talentstream.entity.Job;
 import com.talentstream.repository.ApplicantProfileRepository;
 import com.talentstream.repository.JobRepository;
+import com.talentstream.repository.RegisterRepository;
 import com.talentstream.exception.CustomException;
 
 @Service
@@ -25,15 +28,19 @@ public class FinRecommendedJobService {
     private ApplicantProfileRepository applicantRepository;
     
     @Autowired
-    public FinRecommendedJobService(JobRepository jobRepository, ApplicantProfileRepository applicantRepository) {
+    private RegisterRepository registerRepository;
+    
+    @Autowired
+    public FinRecommendedJobService(JobRepository jobRepository, ApplicantProfileRepository applicantRepository, RegisterRepository registerRepository) {
         this.jobRepository = jobRepository;
         this.applicantRepository = applicantRepository;
+        this.registerRepository = registerRepository;
     }
     public List<Job> findJobsMatchingApplicantSkills(long applicantId) {
     	try {
             ApplicantProfile applicantProfile = applicantRepository.findByApplicantId(applicantId);
-
-            if (applicantProfile == null) {
+            Applicant applicant = registerRepository.findById(applicantId);
+            if (applicantProfile == null || !applicant.getAppicantStatus().equalsIgnoreCase("active")) {
                 return Collections.emptyList();
             }
 
@@ -58,8 +65,8 @@ public class FinRecommendedJobService {
     public long countRecommendedJobsForApplicant(long applicantId) {
         try {
         	Optional<ApplicantProfile> optionalApplicant = applicantRepository.findByApplicantIdWithSkills(applicantId);
-
-            if (optionalApplicant.isEmpty()) {
+        	Applicant applicant1 = registerRepository.findById(applicantId);
+            if (optionalApplicant.isEmpty() || !applicant1.getAppicantStatus().equalsIgnoreCase("active")) {
                 // Return a specific indicator, for example, -1 to signify that the applicant is not found
                 return 0;
             }

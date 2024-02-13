@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.talentstream.entity.Applicant;
+import com.talentstream.entity.JobRecruiter;
 import com.talentstream.repository.JobRecruiterRepository;
 import com.talentstream.repository.RegisterRepository;
 import com.talentstream.dto.LoginDTO;
@@ -90,7 +91,7 @@ public Applicant googleSignIn(String email) {
             // If the applicant does not exist, create a new one
             Applicant newApplicant = new Applicant();
             newApplicant.setEmail(email);
- 
+            newApplicant.setAppicantStatus("Active");
             // Generate a random number as the password
             String randomPassword = generateRandomPassword();
             newApplicant.setPassword(passwordEncoder.encode(randomPassword));
@@ -174,6 +175,8 @@ public void updatePassword(String userEmail, String newPassword) {
  
 }
  
+	
+ 
 	public Applicant findByEmail(String userEmail) {
 		try {
 			System.out.println(userEmail);
@@ -185,8 +188,17 @@ public void updatePassword(String userEmail, String newPassword) {
         }
  
 	}
- 
 	
+	public Applicant findByMobilenumber(String userMobile) {
+		try {
+			
+            return applicantRepository.findByMobilenumber(userMobile);
+            
+        } catch (Exception e) {
+        	
+            throw new CustomException("Error finding applicant by Mobile Number", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
  
  
 	public ResponseEntity<String> saveapplicant(RegistrationDTO registrationDTO) {
@@ -264,5 +276,8 @@ public void updatePassword(String userEmail, String newPassword) {
 	        }
 			
 	    }
+
+
+	
 	
 	}
