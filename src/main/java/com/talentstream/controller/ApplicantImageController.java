@@ -45,5 +45,9 @@ public class ApplicantImageController {
     public ResponseEntity<Resource> getProfilePic(@PathVariable long applicantId) throws IOException {
         return applicantImageService.getProfilePicByApplicantId(applicantId);
     }
+	    @GetMapping("/getphoto1/{applicantId}")
+    public ResponseEntity<Resource> getProfilePic1(@PathVariable long applicantId) throws IOException {
+        return applicantImageService.getProfilePicByApplicantId(applicantId);
+    }
     
 }
