@@ -224,7 +224,10 @@ public void updatePassword(String userEmail, String newPassword) {
         }
 	}
  
- 
+        // Check if the email exists in the database
+	public boolean emailExists(String email) {
+	     return applicantRepository.existsByEmail(email);
+	}
 	public void addApplicant(Applicant applicant) {
 		 try {
 	            applicantRepository.save(applicant);
