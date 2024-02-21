@@ -25,6 +25,8 @@ import com.talentstream.entity.AppliedApplicantInfo;
 import com.talentstream.entity.AppliedApplicantInfoDTO;
 import com.talentstream.entity.ApplyJob;
 import com.talentstream.entity.Job;
+import com.talentstream.entity.MatchTypes;
+import java.util.stream.Collectors;
 import com.talentstream.entity.JobRecruiter;
 import com.talentstream.entity.RecuriterSkills;
 import com.talentstream.repository.AlertsRepository;
