@@ -107,35 +107,46 @@ public class RegisterController {
 //     	        }
 //	    }
 	    
-	   @PostMapping("/applicantLogin")
-	  public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
-	      try {
-	          Applicant applicant = null;
-	          if (regsiterService.isGoogleSignIn(loginDTO)) {
-	              // Handle Google Sign-In
-// 	        	  Applicant app=new Applicant();
-// 	        	  app.setEmail(loginDTO.getEmail());
-// 	        	  registerrepo.save(app);
-	        	 System.out.println("Before " +loginDTO.getEmail());
-	              applicant = regsiterService.googleSignIn(loginDTO.getEmail());
-	              System.out.println(applicant.getEmail());
-	             System.out.println("could return obj successfully");
-	          } else {
-	              // Handle regular login
-	              applicant = regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
-	          }
+	  @PostMapping("/applicantLogin")
+	    public ResponseEntity<Object> login(@RequestBody LoginDTO loginDTO) throws Exception {
+	        try {
+	            Applicant applicant = null;
  
-	          if (applicant != null) {
-	              return createAuthenticationToken(loginDTO, applicant);
-	          } else {
-	              return ResponseEntity.badRequest().body("Login failed");
-	          }
-	      } catch (BadCredentialsException e) {
-	          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
-	      } catch (Exception e) {
-	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
-	      }
-	  }
+	            if (regsiterService.isGoogleSignIn(loginDTO)) {
+	                // Handle Google Sign-In
+	                System.out.println("Before " + loginDTO.getEmail());
+	                applicant = regsiterService.googleSignIn(loginDTO.getEmail());
+	                System.out.println(applicant.getEmail());
+	                System.out.println("could return obj successfully");
+	            } else {
+	                // Handle regular login
+	                applicant = regsiterService.login(loginDTO.getEmail(), loginDTO.getPassword());
+ 
+	                if (applicant == null) {
+	                    // Check if the email exists in the database
+	                    boolean emailExists = regsiterService.emailExists(loginDTO.getEmail());
+	                    if (emailExists) {
+	                        // Incorrect password
+	                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect password");
+	                    } else {
+	                        // No account found with this email address
+	                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No account found with this email address");
+	                    }
+	                }
+	            }
+ 
+	            if (applicant != null) {
+	                return createAuthenticationToken(loginDTO, applicant);
+	            } else {
+	                return ResponseEntity.badRequest().body("Login failed");
+	            }
+	        } catch (BadCredentialsException e) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
+	        } catch (Exception e) {
+	        	 e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during login");
+	        }
+	    }
      	
 //     	   @PostMapping("/applicantLogin1")
 //   	    public ResponseEntity<Object> login1(@RequestBody LoginDTO1 loginDTO1) throws Exception {
