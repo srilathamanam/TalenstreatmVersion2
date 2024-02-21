@@ -250,6 +250,69 @@ public long countAppliedJobsForApplicant(long applicantId) {
     }
     return result;
   }
+	public List<AppliedApplicantInfo> getAppliedApplicants2(long jobRecruiterId, MatchTypes matchTypes, String name, String email, String mobileNumber, String jobTitle, String applicantStatus, Integer minimumExperience, String skillName, String minimumQualification, String location) {
+	        List<AppliedApplicantInfo> all = applyJobRepository.findAppliedApplicantsInfo(jobRecruiterId);
+	        
+	        System.out.println(matchTypes.getName());
+	        System.out.println(matchTypes.getMobilenumber());
+
+	        List<AppliedApplicantInfo> filteredList = all.stream()
+	                .filter(applicant ->
+	                        (name == null || applyMatchType(applicant.getName(), name, matchTypes.getName(), "is")) &&
+	                        (email == null || applyMatchType(applicant.getEmail(), email, matchTypes.getEmail(), "contains")) &&
+	                        (mobileNumber == null || applyMobileType(applicant.getMobilenumber(), mobileNumber, matchTypes.getMobilenumber(), "is")) &&
+	                        (jobTitle == null || applyMatchType(applicant.getJobTitle(), jobTitle, matchTypes.getJobTitle(), "contains")) &&
+	                        (applicantStatus == null || applyMatchType(applicant.getApplicantStatus(), applicantStatus, matchTypes.getApplicantStatus(), "contains")) &&
+	                        (skillName == null || applyMatchType(applicant.getSkillName(), skillName, matchTypes.getSkillName(), "contains")) &&
+	                        (minimumQualification == null || applyMatchType(applicant.getMinimumQualification(), minimumQualification, matchTypes.getMinimumQualification(), "contains")) &&
+	                        (location == null || applyMatchType(applicant.getLocation(), location, matchTypes.getLocation(), "contains")) &&
+	                        (minimumExperience == null || applyExperienceMatchType(applicant.getMinimumExperience(), minimumExperience, matchTypes.getMinimumExperience(), "lessThan")))
+	                .collect(Collectors.toList());
+
+	        return filteredList;
+	    }
+
+	    private boolean applyMatchType(String value, String filterValue, String matchValue, String matchType) {
+	        if (matchValue == null) {
+	            return true; // If matchValue is null, it means it's not provided, so return true
+	        }
+	        if (matchValue.equalsIgnoreCase("contains")) {
+	            return value.toLowerCase().contains(filterValue.toLowerCase());
+	        } else if (matchValue.equalsIgnoreCase("is")) {
+	            return value.equalsIgnoreCase(filterValue);
+	        }
+	        return false;
+	    }
+	    private boolean applyMobileType(String value, String filterValue, String matchValue, String matchType) {
+	        if (matchValue == null) {
+	            return true; // If matchValue is null, it means it's not provided, so return true
+	        }
+	        if (matchValue.equalsIgnoreCase("contains")) {
+	            return value.toLowerCase().contains(filterValue.toLowerCase());
+	        } else if (matchValue.equalsIgnoreCase("is")) {
+	            if (filterValue.length() == value.length()) { // Perform exact match if filter length matches value length
+	                return value.equalsIgnoreCase(filterValue);
+	            } else {
+	                return false; // If lengths don't match, it's not an exact match
+	            }
+	        }
+	        return false;
+	    }
+
+	    private boolean applyExperienceMatchType(int value, int filterValue, String matchValue, String matchType) {
+	        if (matchValue == null) {
+	            return true; // If matchValue is 0, it means it's not provided, so return true
+	        }
+	        if (matchValue.equalsIgnoreCase("greaterThan")) {
+	            return value > filterValue;
+	        } else if (matchValue.equalsIgnoreCase("lessThan")) {
+	            return value < filterValue;
+	        }
+	        else if (matchValue.equalsIgnoreCase("is")) {
+	            return value == filterValue;
+	        }
+	        return false;
+	    }
 	public Map<String, List<AppliedApplicantInfoDTO>> getAppliedApplicants(long jobRecruiterId) {
 	    List<AppliedApplicantInfo> appliedApplicants = applyJobRepository.findAppliedApplicantsInfo(jobRecruiterId);
 	    Map<String, List<AppliedApplicantInfoDTO>> applicantMap = new HashMap<>();
