@@ -122,6 +122,29 @@ public class ApplyJobController {
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>());
       }
  }
+	 @PostMapping("/recruiter/{jobRecruiterId}/appliedapplicants1")
+ public ResponseEntity<List<AppliedApplicantInfo>> getAppliedApplicantsForRecruiter(
+         @PathVariable long jobRecruiterId,
+         @RequestParam(required = false) String name,
+         @RequestParam(required = false) String email,
+         @RequestParam(required = false) String mobileNumber,
+         @RequestParam(required = false) String jobTitle,
+         @RequestParam(required = false) String applicantStatus,
+         @RequestParam(required = false) Integer minimumExperience,
+         @RequestParam(required = false) String skillName,
+         @RequestParam(required = false) String minimumQualification,
+         @RequestParam(required = false) String location,
+         @RequestBody MatchTypes matchTypes) {
+     try {
+    	 
+         List<AppliedApplicantInfo> appliedApplicants = applyJobService.getAppliedApplicants2(jobRecruiterId,matchTypes, name, email, mobileNumber, jobTitle, applicantStatus, minimumExperience, skillName, minimumQualification, location);
+         return ResponseEntity.ok(appliedApplicants);
+     } catch (CustomException e) {
+         return ResponseEntity.status(e.getStatus()).body(null);
+     } catch (Exception e) {
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+     }
+ }
  @GetMapping("/recruiter/{jobRecruiterId}/appliedapplicants/{id}")
  public ResponseEntity<Map<String, List<AppliedApplicantInfoDTO>>> getAppliedApplicantsForRecruiter1(@PathVariable long jobRecruiterId,@PathVariable long id) {
       try {
