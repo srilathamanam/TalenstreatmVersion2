@@ -28,6 +28,7 @@ import com.talentstream.entity.ApplicantStatusHistory;
 import com.talentstream.entity.AppliedApplicantInfoDTO;
 import com.talentstream.entity.ApplyJob;
 import com.talentstream.entity.Job;
+import com.talentstream.entity.MatchTypes;
 import com.talentstream.entity.ScheduleInterview;
 import com.talentstream.service.ApplyJobService;
 import com.talentstream.service.ScheduleInterviewService;
