@@ -59,7 +59,14 @@ public class JobDTO {
 	    private String description;
 	    private LocalDate creationDate;
 	    private String jobStatus="Apply Now";	   
-	    private Long applyJobId;	   
+	    private Long applyJobId;
+	    private String promote = "no";
+	    public String getPromote() {
+			return promote;
+		}
+	     public void setPromote(String promote) {
+			this.promote = promote;
+		}
 	    public Long getApplyJobId() {
 	    	        return applyJobId;
 	    	    }
