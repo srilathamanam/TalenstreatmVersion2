@@ -63,7 +63,9 @@ public class JobService {
              throw new CustomException("Error while searching jobs", HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
-
+    public List<Job> getJobsByPromoteState(String promote) {
+        return jobRepository.findByPromote(promote);
+    }
 
     public ResponseEntity<String> saveJob(JobDTO jobDTO, Long jobRecruiterId) {
     	 try {
