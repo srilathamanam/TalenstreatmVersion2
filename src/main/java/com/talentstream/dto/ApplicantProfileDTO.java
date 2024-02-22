@@ -1,6 +1,6 @@
 package com.talentstream.dto;
 
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import com.talentstream.entity.BasicDetails;
