@@ -17,6 +17,15 @@ public class ApplicantProfileDTO {
     private GraduationDetails graduationDetails;
     private Set<ApplicantSkills> skillsRequired;
     private List<ExperienceDetails> experienceDetails;  
+	 private String experience;
+
+    private String qualification;
+
+    private String specialization;
+
+    @ElementCollection
+    private Set<String> preferredJobLocations = new HashSet<>();
+	
     private String roles;
 	public BasicDetails getBasicDetails() {
 		return basicDetails;
@@ -61,5 +70,35 @@ public class ApplicantProfileDTO {
 	public void setRoles(String roles) {
 		this.roles = roles;
 	}   
-    
+       public String getExperience() {
+    return experience;
+}
+
+public void setExperience(String experience) {
+    this.experience = experience;
+}
+
+public String getQualification() {
+    return qualification;
+}
+
+public void setQualification(String qualification) {
+    this.qualification = qualification;
+}
+
+public String getSpecialization() {
+    return specialization;
+}
+
+public void setSpecialization(String specialization) {
+    this.specialization = specialization;
+}
+
+public Set<String> getPreferredJobLocations() {
+    return preferredJobLocations;
+}
+
+public void setPreferredJobLocations(Set<String> preferredJobLocations) {
+    this.preferredJobLocations = preferredJobLocations;
+}
 }
