@@ -32,7 +32,14 @@ public class ApplicantProfile {
     private IntermediateDetails intermediateDetails;  
     @Embedded
     private GraduationDetails graduationDetails;
- 
+    private String experience;
+
+    private String qualification;
+
+    private String specialization;
+
+    @ElementCollection
+    private Set<String> preferredJobLocations = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = {
             CascadeType.PERSIST,
@@ -125,6 +132,36 @@ public String getRoles() {
 public void setRoles(String roles) {
 	this.roles = roles;
 }
- 
+ public String getExperience() {
+    return experience;
+}
+
+public void setExperience(String experience) {
+    this.experience = experience;
+}
+
+public String getQualification() {
+    return qualification;
+}
+
+public void setQualification(String qualification) {
+    this.qualification = qualification;
+}
+
+public String getSpecialization() {
+    return specialization;
+}
+
+public void setSpecialization(String specialization) {
+    this.specialization = specialization;
+}
+
+public Set<String> getPreferredJobLocations() {
+    return preferredJobLocations;
+}
+
+public void setPreferredJobLocations(Set<String> preferredJobLocations) {
+    this.preferredJobLocations = preferredJobLocations;
+}
 
 }
