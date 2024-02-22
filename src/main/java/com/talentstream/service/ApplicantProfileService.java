@@ -161,6 +161,13 @@ public class ApplicantProfileService {
 	            throw new CustomException("Failed to delete profile for applicant ID: " + applicantId, HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 	    }
+	public int getApplicantProfileById1(int applicantId) {
+
+			ApplicantProfile applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
+
+	        return applicantProfile != null ? applicantProfile.getProfileid() : 0;
+
+		}
 	      
 }
 
