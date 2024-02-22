@@ -252,4 +252,8 @@ public class JobController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error occurred.");
         }
     }
+	@GetMapping("/promote/{promote}")
+    public List<Job> getJobsByPromoteState(@PathVariable String promote) {
+        return jobService.getJobsByPromoteState(promote);
+    }
 }
