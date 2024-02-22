@@ -62,7 +62,16 @@ public class Job {
     private double maxSalary;
     @Column(nullable = false)
     private double minSalary;
+	@Column(nullable = false)
+    private String promote = "no";
+
+	public String getPromote() {
+		return promote;
+	}
  
+	public void setPromote(String promote) {
+		this.promote = promote;
+	}
     public double getMinSalary() {
 		return minSalary;
 	}
