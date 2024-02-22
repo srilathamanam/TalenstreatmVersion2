@@ -60,5 +60,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 	    @Param("recruiterId") Long recruiterId
 	);
 
+	List<Job> findByPromote(String promote);
+
 	
 }
