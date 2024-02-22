@@ -89,7 +89,7 @@ public class ApplicantProfileService {
 	        }
 	    }
 	    
-	    private ApplicantProfile convertDTOToEntity(ApplicantProfileDTO applicantProfileDTO) {
+	  private ApplicantProfile convertDTOToEntity(ApplicantProfileDTO applicantProfileDTO) {
 	        ApplicantProfile applicantProfile = new ApplicantProfile();
 	        applicantProfile.setBasicDetails(applicantProfileDTO.getBasicDetails());	       
 	        applicantProfile.setSkillsRequired(applicantProfileDTO.getSkillsRequired());
@@ -98,6 +98,10 @@ public class ApplicantProfileService {
 	        applicantProfile.setxClassDetails(applicantProfileDTO.getxClassDetails());
 	        applicantProfile.setExperienceDetails(applicantProfileDTO.getExperienceDetails());
 	        applicantProfile.setRoles(applicantProfileDTO.getRoles());
+	        applicantProfile.setExperience(applicantProfileDTO.getExperience());
+	        applicantProfile.setQualification(applicantProfileDTO.getQualification());
+	        applicantProfile.setSpecialization(applicantProfileDTO.getSpecialization());
+	        applicantProfile.setPreferredJobLocations(applicantProfileDTO.getPreferredJobLocations());
 	       	        if (applicantProfileDTO.getRoles() == null) {
 	            applicantProfile.setRoles("ROLE_JOBAPPLICANT");
 	        } else {
