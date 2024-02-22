@@ -23,7 +23,6 @@ public class ApplicantProfileDTO {
 
     private String specialization;
 
-    @ElementCollection
     private Set<String> preferredJobLocations = new HashSet<>();
 	
     private String roles;
