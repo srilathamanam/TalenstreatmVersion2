@@ -100,5 +100,9 @@ public class ApplicantProfileController {
                return ResponseEntity.notFound().build();
            }
        }
+	@GetMapping("/{applicantId}/profileid")
+       public int getApplicantProfileId(@PathVariable int applicantId) {
+           return applicantProfileService.getApplicantProfileById1(applicantId);
+       }
       
 }
