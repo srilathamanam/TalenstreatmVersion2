@@ -1,5 +1,6 @@
 package com.talentstream.dto;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,10 @@ public class ApplicantProfileViewDTO {
     private GraduationDetails graduationDetails;
     private Set<ApplicantSkills> skillsRequired;
     private List<ExperienceDetails> experienceDetails;
+    private String experience;
+    private String qualification;
+    private String specialization;
+    private Set<String> preferredJobLocations = new HashSet<>();
 	
 	public Applicant getApplicant() {
 		return applicant;
@@ -61,6 +66,30 @@ public class ApplicantProfileViewDTO {
 	}
 	public void setExperienceDetails(List<ExperienceDetails> experienceDetails) {
 		this.experienceDetails = experienceDetails;
+	}
+	public String getExperience() {
+		return experience;
+	}
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+	public String getQualification() {
+		return qualification;
+	}
+	public void setQualification(String qualification) {
+		this.qualification = qualification;
+	}
+	public String getSpecialization() {
+		return specialization;
+	}
+	public void setSpecialization(String specialization) {
+		this.specialization = specialization;
+	}
+	public Set<String> getPreferredJobLocations() {
+		return preferredJobLocations;
+	}
+	public void setPreferredJobLocations(Set<String> preferredJobLocations) {
+		this.preferredJobLocations = preferredJobLocations;
 	}
     
 }
