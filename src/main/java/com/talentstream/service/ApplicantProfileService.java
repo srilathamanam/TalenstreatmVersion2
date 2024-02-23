@@ -25,6 +25,7 @@ public class ApplicantProfileService {
 	        this.applicantService=applicantService;
 	      
 	    }
+	   
 	  
 	    public String createOrUpdateApplicantProfile(long applicantId, ApplicantProfileDTO applicantProfileDTO) throws IOException {
 	    	Applicant applicant = applicantService.getApplicantById(applicantId);
@@ -46,24 +47,43 @@ public class ApplicantProfileService {
 	    
 	    public ApplicantProfileViewDTO getApplicantProfileViewDTO(long applicantId) {
 	        Applicant applicant = applicantService.findById(applicantId);
+	        ApplicantProfile applicantProfile=null;
 	                if(applicant==null)
 	                	throw new EntityNotFoundException("Applicant not found with id: " + applicantId);
-
-	        ApplicantProfile applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
-	        		 if(applicantProfile==null)
-		                	throw  new EntityNotFoundException("ApplicantProfile not found for applicant with id: " + applicantId);
-
+ 
+	                try
+	                {
+	        applicantProfile = applicantProfileRepository.findByApplicantId(applicantId);
+	                }
+	                catch(Exception e)
+	                {
+	                	 return convertToDTO(applicant, applicantProfile);
+	                }
+//	        		 if(applicantProfile==null)
+//		                	throw  new EntityNotFoundException("ApplicantProfile not found for applicant with id: " + applicantId);
+ 
 	        return convertToDTO(applicant, applicantProfile);
 	    }
 	    private ApplicantProfileViewDTO convertToDTO(Applicant applicant, ApplicantProfile applicantProfile) {
 	        ApplicantProfileViewDTO dto = new ApplicantProfileViewDTO();
-	        dto.setApplicant(applicant);	       
+	        if(applicantProfile==null)
+	        {
+	        dto.setApplicant(applicant);
+	        }
+	        else
+	        {
+	        dto.setApplicant(applicant);
 	        dto.setBasicDetails(applicantProfile.getBasicDetails());
 	        dto.setxClassDetails(applicantProfile.getxClassDetails());
 	        dto.setIntermediateDetails(applicantProfile.getIntermediateDetails());
 	        dto.setGraduationDetails(applicantProfile.getGraduationDetails());
 	        dto.setSkillsRequired(applicantProfile.getSkillsRequired());
 	        dto.setExperienceDetails(applicantProfile.getExperienceDetails());
+	        dto.setExperience(applicantProfile.getExperience());
+	        dto.setQualification(applicantProfile.getQualification());
+	        dto.setSpecialization(applicantProfile.getSpecialization());
+	        dto.setPreferredJobLocations(applicantProfile.getPreferredJobLocations());
+	        }
 	        return dto;
 	    }
 	    
