@@ -28,8 +28,7 @@ public class RegisterService {
 	 @Autowired
 	RegisterRepository applicantRepository;
 
-	@Autowired
-	 private RegisterService registerService;
+	
 	
     public RegisterService( RegisterRepository applicantRepository) {
 	        this.applicantRepository = applicantRepository;
