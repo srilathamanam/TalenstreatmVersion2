@@ -27,6 +27,10 @@ public class RegisterService {
  
 	 @Autowired
 	RegisterRepository applicantRepository;
+
+	@Autowired
+	 private RegisterService registerService;
+	
     public RegisterService( RegisterRepository applicantRepository) {
 	        this.applicantRepository = applicantRepository;
 	    }
@@ -279,6 +283,39 @@ public void updatePassword(String userEmail, String newPassword) {
 	           return "user not found with this given id";
 	        }
 			
+	    }
+	public ResponseEntity<String> editApplicant(Long applicantId, RegistrationDTO updatedRegistrationDTO) {
+	        try {
+	            
+	            Applicant existingApplicant = applicantRepository.findById(applicantId);
+ 
+	            if (existingApplicant != null) {
+	                
+	                if (updatedRegistrationDTO.getName() != null) {
+	                    existingApplicant.setName(updatedRegistrationDTO.getName());
+	                }
+ 
+	                if (updatedRegistrationDTO.getMobilenumber() != null) {
+	                    existingApplicant.setMobilenumber(updatedRegistrationDTO.getMobilenumber());
+	                }
+	                	
+	                if (updatedRegistrationDTO.getEmail() != null) {
+	                    existingApplicant.setMobilenumber(updatedRegistrationDTO.getEmail());
+	                }
+	                
+	                if (updatedRegistrationDTO.getPassword() != null) {
+	                    existingApplicant.setPassword(passwordEncoder.encode(updatedRegistrationDTO.getPassword()));
+	                }
+ 
+	                applicantRepository.save(existingApplicant);
+ 
+	                return ResponseEntity.ok("Applicant updated successfully");
+	            } else {
+	                return ResponseEntity.badRequest().body("Applicant not found with id: " + applicantId);
+	            }
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating applicant");
+	        }
 	    }
 	
 	}
