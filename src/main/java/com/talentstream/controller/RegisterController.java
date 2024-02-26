@@ -79,7 +79,15 @@ public class RegisterController {
 	        this.regsiterService = regsiterService;	     
  
 	    }
- 
+            @PutMapping("/editApplicant/{applicantId}")
+	    public ResponseEntity<String> editApplicant(@PathVariable Long applicantId, @RequestBody RegistrationDTO updatedRegistrationDTO) {
+	        try {
+	            ResponseEntity<String> response = registerService.editApplicant(applicantId, updatedRegistrationDTO);
+	            return response;
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating applicant");
+	        }
+	    }
 	    @PostMapping("/saveApplicant")
 	    public ResponseEntity<String> register(@RequestBody RegistrationDTO registrationDTO) {
 	    	try {
